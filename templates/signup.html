@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block title %}
+    <title>Sign up</title>
+{% endblock %}
+
+{% block body %}
+<h1>Sign UP!</h1>
+<form method="POST">
+    <table>
+        <tr>
+            <td>Username:</td>
+            <td> <input name="username"
+                       value="{% if check[0] %}{{username}}{% endif %}">
+            </td>
+            {% if not check[0] %}
+                <td style="color:red"> Invalid username</td>
+            {% endif %}
+        </tr>
+        <tr>
+            <td>Password:</td>
+            <td> <input name="password" type="password"
+                       value="{% if check[1] and check[2] %}{{password}}{% endif %}">
+            </td>
+            {% if not check[1] %}
+                <td style="color:red"> Invalid password</td>
+            {% endif %}
+        </tr>
+        <tr>
+            <td>Verify password:</td>
+            <td> <input name="verify" type="password"
+                       value="{% if check[1] and check[2] %}{{verify}}{% endif %}">
+            </td>
+            {% if not check[2] %}
+                <td style="color:red">Does not match password</td>
+            {% endif %}
+        </tr>
+        <tr>
+            <td>Email (optional):</td>
+            <td> <input name="email"
+                value="{% if check[3] %}{{email}}{% endif %}">
+            </td>
+            {% if not check[3] %}
+                <td style="color:red"> Invalid email</td>
+            {% endif %}
+        </tr>
+    </table>
+    <input type="submit">
+</form>
+
+{% endblock %}

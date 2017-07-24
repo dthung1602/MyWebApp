@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>{{_page_title}}</title>
+    </head>
+    
+    <body>
+        {% block body %}
+        {% endblock %}
+
+        <br><br>
+        <hr>
+        <a href="
+            {% if local %}
+                http://localhost:8080/
+            {% else %}
+                https://webapp-173414.appspot.com/
+            {% endif %}
+        ">BACK TO MAIN PAGE</a>
+        <br>
+         
+        {% if local %}
+            <a href="http://localhost:8000/">GOOGLE APPENGINE</a>
+        {% endif %}
+        
+    </body>
+
+</html>

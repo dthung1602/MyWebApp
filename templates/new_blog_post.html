@@ -1,0 +1,30 @@
+{% extends "base.html" %} 
+
+{% block body %}
+    <h1>NEW BLOG POST</h1>
+    <hr><br>
+    <h4><a href="
+        {% if local %} 
+            http://localhost:8080/blog
+        {% else %} 
+            https://webapp-173414.appspot.com/blog
+        {% endif %}
+        ">Click here to go to blog</a></h4>
+    
+    <form method="post">
+        <label>
+            <div>Title</div>
+            <input name="title" value="{{title}}">
+        </label>
+
+        <label>
+            <div>Content</div>
+            <textarea name="content" cols="100" rows="50">{{content}}</textarea>
+        </label>
+
+        <div style="color:red">{{error}}</div>
+        <input type="submit">
+    </form>
+
+<br><br><br> 
+{% endblock %}

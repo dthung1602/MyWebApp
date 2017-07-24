@@ -1,0 +1,20 @@
+{% extends "base.html" %} 
+
+{% block body %}
+<h1>WELCOME TO MY BLOG!!!</h1>
+<hr><br>
+<h4><a href="
+        {% if local %} 
+            http://localhost:8080/blog/newpost
+        {% else %} 
+            https://webapp-173414.appspot.com/blog/newpost
+        {% endif %}
+        ">Click here to create new blog</a></h4>
+
+{% for blog in blogs %}
+    {{blog.render_html(full=False) | safe}}
+    <br><hr><br><br>
+{% endfor %}
+
+<br><br><br> 
+{% endblock %}

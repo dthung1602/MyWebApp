@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block body %}
+<h2>ASCII art submit form</h2>
+<form method="post">
+    <label>
+        <div>Title</div>
+        <input name="title" value="{{title}}">
+    </label>
+
+    <br><br>
+
+    <label>
+        <div>Art</div>
+        <textarea name="art" rows="25", cols="100">{{art}}</textarea>
+    </label>
+
+    <div style="color:red">{{error}}</div>
+    <input type="submit">
+</form>
+
+<br><hr>
+<br><br>
+
+<h2>ASCII Art Library</h2>
+
+{% for a in arts %}
+    <div class="art">
+        <div class="art-title">{{a.title}}</div>
+        <pre class="art-content">{{a.art}}</pre>
+        <br>
+    </div>
+{% endfor %}
+
+{% endblock %}
