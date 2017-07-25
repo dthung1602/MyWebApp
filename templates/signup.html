@@ -6,41 +6,50 @@
 
 {% block body %}
 <h1>Sign UP!</h1>
+<p>or <a href="
+            {% if local %}
+                http://localhost:8080/signin
+            {% else %}
+                https://webapp-173414.appspot.com/signin
+            {% endif %}
+        ">sign in</a></p>
 <form method="POST">
     <table>
         <tr>
             <td>Username:</td>
             <td> <input name="username"
-                       value="{% if check[0] %}{{username}}{% endif %}">
+                       value="{% if check[0] == 0 %}{{username}}{% endif %}">
             </td>
-            {% if not check[0] %}
+            {% if check[0] == 1 %}
                 <td style="color:red"> Invalid username</td>
+            {% elif check[0] == 2 %}
+                <td style="color:red"> Username has been taken</td>
             {% endif %}
         </tr>
         <tr>
             <td>Password:</td>
             <td> <input name="password" type="password"
-                       value="{% if check[1] and check[2] %}{{password}}{% endif %}">
+                       value="{% if check[1] == 0 and check[2] == 0 %}{{password}}{% endif %}">
             </td>
-            {% if not check[1] %}
-                <td style="color:red"> Invalid password</td>
+            {% if check[1] != 0%}
+                <td style="color:red">Invalid password</td>
             {% endif %}
         </tr>
         <tr>
             <td>Verify password:</td>
             <td> <input name="verify" type="password"
-                       value="{% if check[1] and check[2] %}{{verify}}{% endif %}">
+                        value="{% if check[1] == 0 and check[2] == 0 %}{{password}}{% endif %}">
             </td>
-            {% if not check[2] %}
+            {% if check[2] != 0 %}
                 <td style="color:red">Does not match password</td>
             {% endif %}
         </tr>
         <tr>
             <td>Email (optional):</td>
             <td> <input name="email"
-                value="{% if check[3] %}{{email}}{% endif %}">
+                value="{% if check[3] == 0 %}{{email}}{% endif %}">
             </td>
-            {% if not check[3] %}
+            {% if check[3] != 0 %}
                 <td style="color:red"> Invalid email</td>
             {% endif %}
         </tr>
