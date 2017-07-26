@@ -1,7 +1,9 @@
-from Handler import Handler
 from google.appengine.ext import db
-import Signup
+
 import SignOut
+import Signup
+from Handler import Handler
+
 
 class Welcome(Handler):
     def get(self):

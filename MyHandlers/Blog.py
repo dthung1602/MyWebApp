@@ -1,6 +1,8 @@
-import Handler
-from google.appengine.ext import db
 import time
+
+from google.appengine.ext import db
+
+import Handler
 
 
 class BlogHomePage(Handler.Handler):
@@ -43,7 +45,7 @@ class Blog(db.Model):
     content = db.TextProperty(required=True)
     created_time = db.DateTimeProperty(auto_now_add=True)
     last_modified = db.DateTimeProperty(auto_now=True)
-    
+
     def get_description(self):
         return " ".join(self.content.split()[:35]) + " ..."
 

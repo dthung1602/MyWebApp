@@ -1,11 +1,13 @@
-from Handler import Handler
 import hmac
 
+from Handler import Handler
 
 SECRET = "blah blah blah"
 
+
 class Test(Handler):
-    def make_secure(self, s):
+    @staticmethod
+    def make_secure(s):
         return s + "|" + hmac.new(SECRET, s).hexdigest()
 
     def check_secure_val(self, s):

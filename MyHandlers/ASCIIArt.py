@@ -1,6 +1,9 @@
-import Handler
 import time
+
 from google.appengine.ext import db
+
+import Handler
+
 
 class AsciiArt(Handler.Handler):
     def render_page(self, title="", art="", error=""):
@@ -17,7 +20,7 @@ class AsciiArt(Handler.Handler):
         if title and art:
             ascii_art = Art(title=title, art=art)
             ascii_art.put()
-            time.sleep(0.2) 
+            time.sleep(0.2)
             self.redirect("/ascii_art")
         else:
             self.render_page(title, art, "Please fill title and art!")

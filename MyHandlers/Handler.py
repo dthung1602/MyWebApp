@@ -1,6 +1,7 @@
-import webapp2
-import jinja2
 import os
+
+import jinja2
+import webapp2
 
 handlers = []
 template_dir = os.path.join(os.path.dirname(__file__), "../templates")
@@ -11,6 +12,7 @@ jinja_env = jinja2.Environment(loader=jinja2.FileSystemLoader(template_dir),
 # local = False means https://webapp-173414.appspot.com/
 
 __local__ = False
+
 
 class Handler(webapp2.RequestHandler):
     def write(self, *args, **kwargs):

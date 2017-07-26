@@ -1,11 +1,12 @@
-from Handler import Handler
-import re
-from google.appengine.ext import db
 import hmac
-import string
 import random
+import re
+import string
 import time
-import unicodedata
+
+from google.appengine.ext import db
+
+from Handler import Handler
 
 USER = re.compile("^[a-zA-Z0-9_-]{3,20}$")
 PASS = re.compile("^.{3,20}$")
@@ -13,7 +14,6 @@ EMAIL = re.compile("^[\S]+@[\S]+.[\S]+$")
 
 
 class SignUp(Handler):
-
     @staticmethod
     def valid_user(username):
         if not USER.match(username):
@@ -58,7 +58,7 @@ class SignUp(Handler):
 
         # all valid ?
         valid = True if sum(check) == 0 else False
-        
+
         # perform action
         if valid:
             hashed_password, salt = User.create_password_and_salt(password)
@@ -77,7 +77,6 @@ class SignUp(Handler):
                         verify=verify.decode('utf8'),
                         email=email.decode('utf8'),
                         check=check)
-            
 
 
 class User(db.Model):

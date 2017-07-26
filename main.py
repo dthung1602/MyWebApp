@@ -1,13 +1,12 @@
 import webapp2
-import MyHandlers
-from MyHandlers import ASCIIArt, MainPage, Rot13, Signup, Welcome, Blog, Test, SignIn, SignOut
+from MyHandlers import *
 
-MyHandlers.Handler.handlers = [
+Handler.handlers = [
     ('/', MainPage.MainPage, False),
     ('/test', Test.Test, True),
 
-    ('/rot13', Rot13.Rot13, True),  
-        
+    ('/rot13', Rot13.Rot13, True),
+
     ('/signup', Signup.SignUp, True),
     ('/signin', SignIn.SignIn, True),
     ('/signout', SignOut.SignOut, True),
@@ -20,4 +19,4 @@ MyHandlers.Handler.handlers = [
     ('/blog/newpost', Blog.NewPostHandler, False),
 ]
 
-app = webapp2.WSGIApplication(MyHandlers.Handler.handlers, debug=True)
+app = webapp2.WSGIApplication(Handler.handlers, debug=True)

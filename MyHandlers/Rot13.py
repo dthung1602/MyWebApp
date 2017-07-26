@@ -1,7 +1,7 @@
 from Handler import Handler
 
-class Rot13(Handler):
 
+class Rot13(Handler):
     @staticmethod
     def rot13(text):
         a = ord('a')

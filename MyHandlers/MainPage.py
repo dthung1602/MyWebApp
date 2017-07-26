@@ -2,7 +2,8 @@ import Handler
 
 
 class MainPage(Handler.Handler):
-    def filter(self, handlers):
+    @staticmethod
+    def filter(handlers):
         result = []
         for handler in handlers:
             if handler[2]:

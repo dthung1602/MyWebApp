@@ -1,5 +1,4 @@
 import Handler
-from google.appengine.ext import db
 
 
 class SignOut(Handler.Handler):
