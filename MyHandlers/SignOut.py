@@ -1,11 +1,11 @@
 import Handler
 
 
-class SignOut(Handler.Handler):
-    @staticmethod
-    def reset_user_cookie(web):
-        web.response.headers['Set-Cookie'] = "user="
+def reset_login_cookie(handler):
+    handler.response.headers['Set-Cookie'] = "user="
 
+
+class SignOut(Handler.Handler):
     def get(self):
-        SignOut.reset_user_cookie(self)
+        reset_login_cookie(self)
         self.redirect("/signin")
