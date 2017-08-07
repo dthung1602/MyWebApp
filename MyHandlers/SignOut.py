@@ -2,7 +2,7 @@ import Handler
 
 
 def reset_login_cookie(handler):
-    handler.response.headers['Set-Cookie'] = "user="
+    handler.response.delete_cookie('user')
 
 
 class SignOut(Handler.Handler):

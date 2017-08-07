@@ -14,17 +14,25 @@ def make_secure(value):
 
 def set_login_cookie(handler, username):
     user_cookie = make_secure(username)
-    handler.response.headers.add_header('Set-Cookie', 'user=%s' % user_cookie)
+    handler.response.set_cookie('user', user_cookie)
 
 
 class SignIn(Handler.Handler):
     def get(self):
-        self.render("signin.html")
+        error = self.get_cookie_value("general_signin_errors")
+        # TODO
+        # print ">>>>", error, "<<<<<<<"
+        if error:
+            self.response.delete_cookie("general_signin_errors")
+            self.render("signin.html", general_signin_errors=error)
+        else:
+            self.render("signin.html")
 
     def post(self):
         username = self.request.get("username")
         password = self.request.get("password")
         user = Signup.User.get_user_by_name(username)
+        redirect_page = self.response.cookies.get("redirect")
 
         if not user:
             self.render("signin.html", username_error="Invalid user name")
@@ -35,4 +43,7 @@ class SignIn(Handler.Handler):
             return
 
         set_login_cookie(self, username)
-        self.redirect("/welcome")
+        if redirect_page:
+            self.redirect(redirect_page)
+        else:
+            self.redirect("/welcome")

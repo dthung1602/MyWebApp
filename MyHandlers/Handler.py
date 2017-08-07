@@ -1,4 +1,5 @@
 import os
+from urllib import unquote
 
 import jinja2
 import webapp2
@@ -15,6 +16,10 @@ __local__ = False
 
 
 class Handler(webapp2.RequestHandler):
+    def get_cookie_value(self, cookie_name, default_value=None):
+        cookie_value = self.request.cookies.get(cookie_name, None)
+        return unquote(cookie_value) if cookie_value else default_value
+
     def write(self, *args, **kwargs):
         self.response.out.write(*args, **kwargs)
         print "-----------------------------------------------------\n\n"
