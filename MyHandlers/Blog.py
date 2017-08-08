@@ -31,7 +31,7 @@ class NewPostHandler(Handler.Handler):
             if log_in_as_admin(cookie):
                 self.render("new_blog_post.html")
             else:
-                self.response.set_cookie("general_signin_errors", quote("Please sign in as administrator!"))
+                self.response.set_cookie("general_signin_errors", quote("You are not administrator!"))
                 self.response.set_cookie("redirect", "/blog/newpost")
                 self.redirect("/signin")
         else:
@@ -61,11 +61,13 @@ class NewPostHandler(Handler.Handler):
                     else:
                         self.redirect("https://webapp-173414.appspot.com/blog")
             else:
-                self.response.set_cookie("general_signin_errors", quote("Please sign in as administrator!"))
+                self.response.set_cookie("general_signin_errors", quote("You are not administrator!"))
+                self.response.set_cookie("redirect", "/blog/newpost")
                 self.redirect("/signin")
         else:
             self.response.set_cookie("general_signin_errors",
                                      quote("You must sign in as administrator to create new blog!"))
+            self.response.set_cookie("redirect", "/blog/newpost")
             self.redirect("/signin")
 
 
