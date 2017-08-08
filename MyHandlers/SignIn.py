@@ -20,8 +20,7 @@ def set_login_cookie(handler, username):
 class SignIn(Handler.Handler):
     def get(self):
         error = self.get_cookie_value("general_signin_errors")
-        # TODO
-        # print ">>>>", error, "<<<<<<<"
+
         if error:
             self.response.delete_cookie("general_signin_errors")
             self.render("signin.html", general_signin_errors=error)
@@ -32,7 +31,7 @@ class SignIn(Handler.Handler):
         username = self.request.get("username")
         password = self.request.get("password")
         user = Signup.User.get_user_by_name(username)
-        redirect_page = self.response.cookies.get("redirect")
+        redirect_page = self.request.cookies.get("redirect")
 
         if not user:
             self.render("signin.html", username_error="Invalid user name")
@@ -43,7 +42,9 @@ class SignIn(Handler.Handler):
             return
 
         set_login_cookie(self, username)
+
         if redirect_page:
+            self.response.delete_cookie("redirect")
             self.redirect(redirect_page)
         else:
             self.redirect("/welcome")
