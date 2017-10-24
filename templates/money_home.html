@@ -7,7 +7,13 @@
 {% if months %}
 <ul>
     {% for m in months %}
-    <li><a href="">{{m}}</a></li>
+    <li><a href="
+        {% if local %}
+            http://localhost:8080/moneyM1522/{{m.strftime("%b%Y")}}
+        {% else %}
+            https://webapp-173414.appspot.com/moneyM1522/{{m.strftime("%b%Y")}}
+        {% endif %}
+    ">{{m.strftime("%B %Y")}}</a></li>
     {% endfor %}
 </ul>
 {% else %}

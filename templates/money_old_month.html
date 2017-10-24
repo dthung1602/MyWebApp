@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block body %}
+
+<h1>Money Month</h1>
+<h2>{{month.time_begin.strftime("%B %Y")}}</h2>
+<br>
+<hr><br>
+
+<p><i>Start date: {{month.time_begin.strftime("%d/%m/%y")}}</i></p>
+<p><i>End date: {{month.time_end.strftime("%d/%m/%y")}}</i></p>
+<br>
+
+<table>
+    <!--table head-->
+    <tr>
+        <td>Date</td>
+        <td>Buyer</td>
+        <td>What</td>
+        <td>Price</td>
+    </tr>
+
+    <!--goods-->
+    {% for good in goods %}
+    <tr>
+        <td>good.date.strftime("%d/%m/%y")</td>
+        <td>good.buyer</td>
+        <td>good.what</td>
+        <td>good.price</td>
+    </tr>
+    {% end for %}
+
+    <!--sum-->
+    <!--TODO-->
+    <tr>
+        <td></td>
+    </tr>
+</table>
+
+{% endblock %}

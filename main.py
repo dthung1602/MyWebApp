@@ -18,7 +18,8 @@ Handler.handlers = [
     ('/blog/([0-9]+)', Blog.BlogHandler, False),
     ('/blog/newpost', Blog.NewPostHandler, False),
 
-    ('/moneyM1522/home', MoneyHome.MoneyHome, True),
+    ('/moneyM1522/home', Money.MoneyHome, True),
+    ('/moneyM1522/([a-zA-z]+[0-9]+)', Money.MoneyMonth, False),
 ]
 
 app = webapp2.WSGIApplication(Handler.handlers, debug=True)
