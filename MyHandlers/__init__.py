@@ -8,3 +8,4 @@ import SignOut
 import Signup
 import Test
 import Welcome
+import MoneyHome

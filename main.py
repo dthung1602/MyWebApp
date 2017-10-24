@@ -17,6 +17,8 @@ Handler.handlers = [
     ('/blog', Blog.BlogHomePage, True),
     ('/blog/([0-9]+)', Blog.BlogHandler, False),
     ('/blog/newpost', Blog.NewPostHandler, False),
+
+    ('/moneyM1522/home', MoneyHome.MoneyHome, True),
 ]
 
 app = webapp2.WSGIApplication(Handler.handlers, debug=True)

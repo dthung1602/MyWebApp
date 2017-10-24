@@ -12,7 +12,7 @@ jinja_env = jinja2.Environment(loader=jinja2.FileSystemLoader(template_dir),
 # local = True means http://localhost:8080/
 # local = False means https://webapp-173414.appspot.com/
 
-__local__ = False
+__local__ = True
 
 
 class Handler(webapp2.RequestHandler):
