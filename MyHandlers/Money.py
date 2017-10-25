@@ -1,4 +1,5 @@
 import time
+from datetime import datetime
 from datetime import timedelta
 
 from google.appengine.ext import db
@@ -30,31 +31,48 @@ class MoneyMonth(Handler):
         if month is None:
             self.redirect("/moneyM1522/home")
         else:
-            if month.time_end is None:
-                self.render("money_current_month.html", month=month, buyers=Buyer.get_all_buyers())
-            else:
-                self.render("money_old_month.html", month=month, buyers=Buyer.get_all_buyers())
+            self.render_current_month(month)
 
     def post(self, month_id):
-        month_id = int(month_id)
-        month = Month.get_by_id(month_id)
+        month = Month.get_by_id(int(month_id))
         if month is None:
             self.redirect("/moneyM1522/home")
         else:
-            if month.time_end is None:
-                # todo validate info
-                good = Good(
-                    month_id=month_id,
-                    price=int(self.request.get("price")),
-                    what=self.request.get("what"),
-                    buyer=self.request.get("buyer")
-                )
-                good.put()
-                time.sleep(0.2)
-                self.render("money_current_month.html", month=month, buyers=Buyer.get_all_buyers())
+            if self.request.get("action") == "Add":
+                self.add_good(month)
             else:
-                self.render("money_old_month.html", month=month, buyers=Buyer.get_all_buyers(),
-                            error="Content of old months cannot be changed.")
+                self.end_month(month)
+
+    def render_current_month(self, month):
+        buyers = list(Buyer.get_all_buyers())
+        month.spend = month.sum()
+        month.total_money = month.spend - month.last_month_left
+        month.average = month.total_money / len(buyers)
+
+        for buyer in buyers:
+            buyer.money = buyer.get_money_in_month(month)
+            buyer.charge = month.average - buyer.money
+
+        self.render("money_current_month.html", month=month, buyers=buyers)
+
+    def add_good(self, month):
+        # todo validate info
+        good = Good(
+            month_id=month.key().id(),
+            price=int(self.request.get("price")),
+            what=self.request.get("what"),
+            buyer=self.request.get("buyer")
+        )
+        good.put()
+        time.sleep(0.2)
+        self.render_current_month(month)
+
+    def end_month(self, month):
+        # todo validate info
+        month.time_end = datetime.now()
+        month.put()
+        time.sleep(0.2)
+        self.render_current_month(month)
 
 
 #############################################################
@@ -68,11 +86,16 @@ class Buyer(db.Model):
     def get_all_buyers():
         return db.GqlQuery("SELECT * FROM Buyer ORDER BY name ASC")
 
+    def get_money_in_month(self, month):
+        goods = db.GqlQuery(
+            "SELECT * FROM Good WHERE month_id={} AND buyer='{}' ORDER BY date ASC".format(month.key().id(), self.name))
+        return sum(good.price for good in goods)
+
 
 class Month(db.Model):
     last_month_left = db.IntegerProperty(required=True)
-    time_begin = db.DateProperty(auto_now_add=True)
-    time_end = db.DateProperty()
+    time_begin = db.DateTimeProperty(auto_now_add=True)
+    time_end = db.DateTimeProperty()
 
     def to_string(self):
         new_time = self.time_begin + timedelta(days=4)
@@ -82,6 +105,9 @@ class Month(db.Model):
 
     def get_goods(self):
         return db.GqlQuery("SELECT * FROM Good WHERE month_id={} ORDER BY date ASC".format(self.key().id()))
+
+    def sum(self):
+        return sum(good.price for good in self.get_goods())
 
 
 class Good(db.Model):

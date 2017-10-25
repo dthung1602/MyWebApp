@@ -12,6 +12,12 @@ indexes:
 
 - kind: Good
   properties:
+  - name: buyer
+  - name: month_id
+  - name: date
+
+- kind: Good
+  properties:
   - name: month_id
   - name: date
 
