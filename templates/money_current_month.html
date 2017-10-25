@@ -9,6 +9,8 @@
 <p><i>Start date: {{month.time_begin.strftime("%d/%m/%y")}}</i></p>
 <br>
 
+<p><i><b>{{error}}</b></i></p>
+
 <form method="post">
     <table>
         <!--table head-->
@@ -25,7 +27,7 @@
             <td>{{good.date.strftime("%d/%m/%y")}}</td>
             <td>{{good.buyer}}</td>
             <td>{{good.what}}</td>
-            <td>{{good.price}}</td>
+            <td>{{good.price}}K</td>
         </tr>
         {% endfor %}
 
@@ -48,5 +50,13 @@
     <button>End month</button>
     <p>*All data should be submit before end month.</p>
 </form>
+
+<a href="
+        {% if local %}
+            http://localhost:8080/moneyM1522/home
+        {% else %}
+            https://webapp-173414.appspot.com/moneyM1522/home
+        {% endif %}
+">Back to money homepage</a>
 
 {% endblock %}

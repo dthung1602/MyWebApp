@@ -9,11 +9,11 @@
     {% for m in months %}
     <li><a href="
         {% if local %}
-            http://localhost:8080/moneyM1522/{{m.strftime("%b%Y")}}
+            http://localhost:8080/moneyM1522/{{m.key().id()}}
         {% else %}
-            https://webapp-173414.appspot.com/moneyM1522/{{m.strftime("%b%Y")}}
+            https://webapp-173414.appspot.com/moneyM1522/{{m.key().id()}}
         {% endif %}
-    ">{{m.strftime("%B %Y")}}</a></li>
+    ">{{m.to_string()}}</a></li>
     {% endfor %}
 </ul>
 {% else %}
