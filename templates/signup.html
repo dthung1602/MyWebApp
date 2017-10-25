@@ -11,13 +11,7 @@
 {% block body %}
 
 <h1>Sign UP!</h1>
-<p>or <a href="
-            {% if local %}
-                http://localhost:8080/signin
-            {% else %}
-                https://webapp-173414.appspot.com/signin
-            {% endif %}
-        ">sign in</a></p>
+<p>or <a href="{{__host__}}/signin">sign in</a></p>
 <form method="POST">
     <table>
         <tr>

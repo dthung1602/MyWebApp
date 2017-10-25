@@ -1,11 +1,5 @@
 <div class="single_blog">
-    <div class="blog_title"><a href="
-        {% if local %} 
-            http://localhost:8080/blog/{{blog_id}}
-        {% else %} 
-            https://webapp-173414.appspot.com/blog/{{blog_id}}
-        {% endif %}
-    ">{{blog.title}}</a></div>
+    <div class="blog_title"><a href="{{__host__}}/blog/{{blog_id}}">{{blog.title}}</a></div>
     <div class="blog_time">Created: {{blog.created_time.strftime('%d, %b %Y')}}</div>
     <div class="blog_time">Last modified: {{blog.last_modified.strftime('%d, %b %Y')}}</div>
     <br>

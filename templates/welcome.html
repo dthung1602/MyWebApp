@@ -7,11 +7,5 @@
 {% block body %}
 <h1> Welcome! </h1>
 <p> You have signed up as {{user}}! </p>
-<a href="
-            {% if local %}
-                http://localhost:8080/signout
-            {% else %}
-                https://webapp-173414.appspot.com/signout
-            {% endif %}
-        ">Signout</a>
+<a href="{{__host__}}/signout">Signout</a>
 {% endblock %}

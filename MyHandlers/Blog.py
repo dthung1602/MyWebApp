@@ -56,10 +56,7 @@ class NewPostHandler(Handler.Handler):
                     blog.put()
 
                     time.sleep(1)
-                    if Handler.__local__:
-                        self.redirect("http://localhost:8080/blog")
-                    else:
-                        self.redirect("https://webapp-173414.appspot.com/blog")
+                    self.redirect(Handler.__host__ + "/blog")
             else:
                 self.response.set_cookie("general_signin_errors", quote("You are not administrator!"))
                 self.response.set_cookie("redirect", "/blog/newpost")
@@ -89,7 +86,7 @@ class Blog(db.Model):
     def render_html(self, full=True):
         t = Handler.jinja_env.get_template("single_blog.html")
         blog_id = self.key().id()
-        return t.render(blog=self, blog_id=blog_id, full=full, local=Handler.__local__)
+        return t.render(blog=self, blog_id=blog_id, full=full, __host__=Handler.__host__)
 
     def render_content(self):
         return self.content.replace("\n", "<br>")

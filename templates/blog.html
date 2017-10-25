@@ -3,11 +3,5 @@
 {% block body %}
 {{blog.render_html() | safe}}
 <br>
-<a href="
-        {% if local %} 
-            http://localhost:8080/blog
-        {% else %} 
-            https://webapp-173414.appspot.com/blog
-        {% endif %}
-    ">Back to blog homepage</a>
+<a href="{{__host__}}/blog">Back to blog homepage</a>
 {% endblock %}

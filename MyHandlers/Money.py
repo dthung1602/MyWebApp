@@ -62,9 +62,8 @@ class MoneyMonth(Handler):
             buyer=self.request.get("buyer")
         )
         good.put()
-        time.sleep(1)
         month.update()
-        time.sleep(0.2)
+        time.sleep(1)
         self.render_current_month(month)
 
     def end_month(self, old_month):

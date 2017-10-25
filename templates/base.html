@@ -3,7 +3,7 @@
 <html>
 
 <head>
-    <title>{{_page_title}}</title>
+    <title>{{__page_title__}}</title>
 </head>
 
 <body>
@@ -12,17 +12,11 @@
 
 <br><br>
 <hr>
-<a href="
-            {% if local %}
-                http://localhost:8080/
-            {% else %}
-                https://webapp-173414.appspot.com/
-            {% endif %}
-        ">BACK TO MAIN PAGE</a>
+<a href="{{__host__}}/">BACK TO MAIN PAGE</a>
 <br>
 
-{% if local %}
-<a href="http://localhost:8000/">GOOGLE APPENGINE</a>
+{% if __host__ == "http://localhost:8080" %}
+<a href="http://localhost:8000/">GOOGLE APPENGINE ADMIN PAGE</a>
 {% endif %}
 
 </body>

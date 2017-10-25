@@ -1,9 +1,5 @@
 {% extends "base.html" %}
 
-{% block title %}
-    <title>Main page</title>
-{% endblock %}
-
 {% block body %}
 <h2>WELLCOME!</h2>
 <p4>Click one of these links:</p4>
@@ -11,13 +7,7 @@
 <ul>
 {% for handler in handlers %}
     <li>
-        <a href="
-            {% if local %}
-                http://localhost:8080{{handler[0]}}
-            {% else %}
-                https://webapp-173414.appspot.com{{handler[0]}}
-            {% endif %}
-         ">{{handler[1].__name__}}</a>
+        <a href="{{__host__}}{{handler[0]}}">{{handler[1].__name__}}</a>
     </li>
 {% endfor %}
 </ul>

@@ -3,13 +3,7 @@
 {% block body %}
     <h1>NEW BLOG POST</h1>
     <hr><br>
-    <h4><a href="
-        {% if local %} 
-            http://localhost:8080/blog
-        {% else %} 
-            https://webapp-173414.appspot.com/blog
-        {% endif %}
-        ">Click here to go to blog</a></h4>
+    <h4><a href="{{__host__}}/blog">Click here to go to blog</a></h4>
     
     <form method="post">
         <label>

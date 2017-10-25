@@ -13,33 +13,15 @@
 {% endif %}
 
 <!-----------------------links----------------------------->
-<a href="
-        {% if local %}
-            http://localhost:8080/moneyM1522/home
-        {% else %}
-            https://webapp-173414.appspot.com/moneyM1522/home
-        {% endif %}
-">Back to money homepage</a>
+<a href="{{__host__}}/moneyM1522/home">Back to money homepage</a>
 <br>
 
 {% if month.prev_month %}
-<a href="
-        {% if local %}
-            http://localhost:8080/moneyM1522/{{month.prev_month}}
-        {% else %}
-            https://webapp-173414.appspot.com/moneyM1522/{{month.prev_month}}
-        {% endif %}
-">Previous month</a>
+<a href="{{__host__}}/moneyM1522/{{month.prev_month}}">Previous month</a>
 {% endif %}
 
 {% if month.next_month %}
-<a href="
-        {% if local %}
-            http://localhost:8080/moneyM1522/{{month.next_month}}
-        {% else %}
-            https://webapp-173414.appspot.com/moneyM1522/{{month.next_month}}
-        {% endif %}
-">Next month</a>
+<a href="{{__host__}}/moneyM1522/{{month.next_month}}">Next month</a>
 {% endif %}
 
 
@@ -120,6 +102,5 @@
     {% endfor %}
 </table>
 <p>*Note: + means pay, - means get back</p>
-
 
 {% endblock %}

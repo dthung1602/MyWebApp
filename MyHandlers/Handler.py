@@ -9,10 +9,9 @@ template_dir = os.path.join(os.path.dirname(__file__), "../templates")
 jinja_env = jinja2.Environment(loader=jinja2.FileSystemLoader(template_dir),
                                autoescape=True)
 
-# local = True means http://localhost:8080/
-# local = False means https://webapp-173414.appspot.com/
-
-__local__ = True
+__host__ = "http://localhost:8080"
+# __host__ = "https://webapp-173414.appspot.com/"
+# __host__ = "http://  [insert ip address here]  :8080/"
 
 
 class Handler(webapp2.RequestHandler):
@@ -26,8 +25,8 @@ class Handler(webapp2.RequestHandler):
 
     def render_str(self, template, **kwargs):
         t = jinja_env.get_template(template)
-        _page_title = self.__class__.__name__
-        return t.render(kwargs, _page_title=_page_title, local=__local__)
+        __page_title__ = kwargs.get("__page_title__", self.__class__.__name__)
+        return t.render(kwargs, __page_title__=__page_title__, __host__=__host__)
 
     def render(self, template, **kwargs):
         self.write(self.render_str(template, **kwargs))
