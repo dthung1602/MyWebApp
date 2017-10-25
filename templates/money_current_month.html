@@ -12,6 +12,7 @@
 <p><i>End date : {{month.time_end.strftime("%d/%m/%y")}}</i></p>
 {% endif %}
 
+<!-----------------------links----------------------------->
 <a href="
         {% if local %}
             http://localhost:8080/moneyM1522/home
@@ -19,10 +20,33 @@
             https://webapp-173414.appspot.com/moneyM1522/home
         {% endif %}
 ">Back to money homepage</a>
+<br>
+
+{% if month.prev_month %}
+<a href="
+        {% if local %}
+            http://localhost:8080/moneyM1522/{{month.prev_month}}
+        {% else %}
+            https://webapp-173414.appspot.com/moneyM1522/{{month.prev_month}}
+        {% endif %}
+">Previous month</a>
+{% endif %}
+
+{% if month.next_month %}
+<a href="
+        {% if local %}
+            http://localhost:8080/moneyM1522/{{month.next_month}}
+        {% else %}
+            https://webapp-173414.appspot.com/moneyM1522/{{month.next_month}}
+        {% endif %}
+">Next month</a>
+{% endif %}
+
 
 <p><i><b>{{error}}</b></i></p>
 <br>
 
+<!-----------------------links----------------------------->
 <form method="post">
     <table>
         <!--table head-->
@@ -58,38 +82,44 @@
         {% endif %}
     </table>
 
-    <!--summarize-->
-    <br>
-    <h4>Summarize</h4>
-    <p>Total spend in month: {{month.spend}}</p>
-    <p>Last month left : {{month.last_month_left}}</p>
-    <p>-----------------------------------------------</p>
-    <p>Money to pay : {{month.total_money}}</p>
-    <p>Average : {{month.average}}</p>
-    <br>
-    <table>
-        <tr>
-            <td>Name</td>
-            <td>Money spend in month</td>
-            <td>Payment</td>
-        </tr>
-        {% for buyer in buyers %}
-        <tr>
-            <td>{{buyer.name}}</td>
-            <td>{{buyer.money}}</td>
-            <td>{{buyer.charge}}</td>
-        </tr>
-        {% endfor %}
-    </table>
-    <p>*Note: + means pay, - means get back</p>
-
     <!--end month-->
     {% if not month.time_end %}
-    <br><hr><br>
+    <br>
+    <hr>
+    <br>
     <input type="submit" name="action" value="End month">
     <p>*All data should be submit before end month.</p>
     {% endif %}
 </form>
+
+<!-----------------------------summarize------------------------------>
+<br>
+<h4>Summarize</h4>
+<p>Total spend in month: {{month.spend}}</p>
+<p>Last month left : {{month.last_month_left}}</p>
+<p>-----------------------------------------------</p>
+<p>Money to pay : {{month.total_money}}</p>
+<br>
+<p>Average : {{month.average}}</p>
+<p>Round up: {{month.roundup}}</p>
+<p>-----------------------------------------------</p>
+<p>Money left for next month: {{month.next_month_left}}</p>
+<br>
+<table>
+    <tr>
+        <td>Name</td>
+        <td>Money spend in month</td>
+        <td>Payment</td>
+    </tr>
+    {% for buyer in buyers %}
+    <tr>
+        <td>{{buyer.name}}</td>
+        <td>{{buyer.money}}</td>
+        <td>{{buyer.charge}}</td>
+    </tr>
+    {% endfor %}
+</table>
+<p>*Note: + means pay, - means get back</p>
 
 
 {% endblock %}

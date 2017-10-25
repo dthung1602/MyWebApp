@@ -1,3 +1,4 @@
+import math
 import time
 from datetime import datetime
 from datetime import timedelta
@@ -20,11 +21,11 @@ class MoneyHome(Handler):
         # todo check empty months
         month = Month(last_month_left=0)
         month.put()
+        month.update()
         time.sleep(0.2)
         self.redirect("/moneyM1522/{}".format(month.key().id()))
 
 
-# todo: old month
 class MoneyMonth(Handler):
     def get(self, month_id):
         month = Month.get_by_id(int(month_id))
@@ -45,13 +46,10 @@ class MoneyMonth(Handler):
 
     def render_current_month(self, month):
         buyers = list(Buyer.get_all_buyers())
-        month.spend = month.sum()
-        month.total_money = month.spend - month.last_month_left
-        month.average = month.total_money / len(buyers)
 
         for buyer in buyers:
             buyer.money = buyer.get_money_in_month(month)
-            buyer.charge = month.average - buyer.money
+            buyer.charge = month.roundup - buyer.money
 
         self.render("money_current_month.html", month=month, buyers=buyers)
 
@@ -64,15 +62,25 @@ class MoneyMonth(Handler):
             buyer=self.request.get("buyer")
         )
         good.put()
+        time.sleep(1)
+        month.update()
         time.sleep(0.2)
         self.render_current_month(month)
 
-    def end_month(self, month):
-        # todo validate info
-        month.time_end = datetime.now()
-        month.put()
-        time.sleep(0.2)
-        self.render_current_month(month)
+    def end_month(self, old_month):
+        # create new month
+        new_month = Month(last_month_left=old_month.next_month_left)
+        new_month.prev_month = old_month.key().id()
+        new_month.put()
+        new_month.update()
+
+        # end old month
+        old_month.time_end = datetime.now()
+        old_month.next_month = new_month.key().id()
+        old_month.put()
+
+        time.sleep(1)
+        self.render_current_month(old_month)
 
 
 #############################################################
@@ -94,8 +102,31 @@ class Buyer(db.Model):
 
 class Month(db.Model):
     last_month_left = db.IntegerProperty(required=True)
+    next_month_left = db.IntegerProperty()
+
+    spend = db.IntegerProperty()
+    total_money = db.IntegerProperty()
+    average = db.FloatProperty()
+    roundup = db.IntegerProperty()
+
     time_begin = db.DateTimeProperty(auto_now_add=True)
     time_end = db.DateTimeProperty()
+
+    next_month = db.IntegerProperty()
+    prev_month = db.IntegerProperty()
+
+    @staticmethod
+    def round_up(n):
+        return int(math.ceil(n / 10) * 10)
+
+    def update(self):
+        buyers = list(Buyer.get_all_buyers())
+        self.spend = self.sum()
+        self.total_money = self.spend - self.last_month_left
+        self.average = self.total_money * 1.0 / len(buyers)
+        self.roundup = self.round_up(self.average)
+        self.next_month_left = self.roundup * len(buyers) - self.total_money
+        self.put()
 
     def to_string(self):
         new_time = self.time_begin + timedelta(days=4)
