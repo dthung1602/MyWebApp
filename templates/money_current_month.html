@@ -2,106 +2,159 @@
 
 {% block body %}
 
-<h1>Money Month</h1>
-<h2>{{month.time_begin.strftime("%B %Y")}}</h2>
-<br>
-<hr><br>
-
-<p><i>Start date: {{month.time_begin.strftime("%d/%m/%y")}}</i></p>
-{% if month.time_end %}
-<p><i>End date : {{month.time_end.strftime("%d/%m/%y")}}</i></p>
-{% endif %}
-
-<!-----------------------links----------------------------->
-<a href="{{__host__}}/moneyM1522/home">Back to money homepage</a>
-<br>
-
-{% if month.prev_month %}
-<a href="{{__host__}}/moneyM1522/{{month.prev_month}}">Previous month</a>
-{% endif %}
-
-{% if month.next_month %}
-<a href="{{__host__}}/moneyM1522/{{month.next_month}}">Next month</a>
-{% endif %}
-
-{% for er in error %}
-<p>{{er}}</p>
-{% endfor %}
-<br>
-
-<!-----------------------links----------------------------->
-<form method="post">
-    <table>
-        <!--table head-->
-        <tr>
-            <td>Date</td>
-            <td>Buyer</td>
-            <td>What</td>
-            <td>Price</td>
-        </tr>
-
-        <!--goods-->
-        {% for good in month.get_goods() %}
-        <tr>
-            <td>{{good.date.strftime("%d/%m/%y")}}</td>
-            <td>{{good.buyer}}</td>
-            <td>{{good.what}}</td>
-            <td>{{good.price}}K</td>
-        </tr>
-        {% endfor %}
-
-        <!--new-->
-        {% if not month.time_end %}
-        <tr>
-            <td><input type="submit" name="action" value="Add"></td>
-            <td><select name="buyer" required>
-                {% for b in buyers %}
-                <option value={{b.name}}>{{b.name}}</option>
-                {% endfor %}
-            </select></td>
-            <td><input name="what" required></td>
-            <td><input name="price" type="number" min="1" required> K</td>
-        </tr>
-        {% endif %}
-    </table>
-
-    <!--end month-->
-    {% if not month.time_end %}
-    <br>
-    <hr>
-    <br>
-    <input type="submit" name="action" value="End month">
-    <p>*All data should be submit before end month.</p>
+<div class="jumbotron">
+    <h1 style="padding-bottom:25px;padding-left:50px">{{month.time_begin.strftime("%B %Y")}}</h1>
+    <p style="padding-left:70px"><i>Start date: {{month.time_begin.strftime("%d/%m/%y")}}</i></p>
+    {% if month.time_end %}
+    <p style="padding-left:70px"><i>End date : {{month.time_end.strftime("%d/%m/%y")}}</i></p>
     {% endif %}
-</form>
+</div>
 
-<!-----------------------------summarize------------------------------>
-<br>
-<h4>Summarize</h4>
-<p>Total spend in month: {{month.spend}}</p>
-<p>Last month left : {{month.last_month_left}}</p>
-<p>-----------------------------------------------</p>
-<p>Money to pay : {{month.total_money}}</p>
-<br>
-<p>Average : {{month.average}}</p>
-<p>Round up: {{month.roundup}}</p>
-<p>-----------------------------------------------</p>
-<p>Money left for next month: {{month.next_month_left}}</p>
-<br>
-<table>
-    <tr>
-        <td>Name</td>
-        <td>Money spend in month</td>
-        <td>Payment</td>
-    </tr>
-    {% for buyer in buyers %}
-    <tr>
-        <td>{{buyer.name}}</td>
-        <td>{{buyer.money}}</td>
-        <td>{{buyer.charge}}</td>
-    </tr>
+<div class="container">
+    <!-----------------------links----------------------------->
+    <div style="padding:30px; text-align:center">
+        {% if month.prev_month %}
+        <a href="{{__host__}}/moneyM1522/{{month.prev_month}}">
+            <button class="btn btn-success">PREV</button>
+        </a>
+        {% else %}
+        <button class="btn btn-success" disabled>PREV</button>
+        {% endif %}
+
+        <a href="{{__host__}}/moneyM1522/home">
+            <button class="btn btn-success">HOME</button>
+        </a>
+
+        {% if month.next_month %}
+        <a href="{{__host__}}/moneyM1522/{{month.next_month}}">
+            <button class="btn btn-success">NEXT</button>
+        </a>
+        {% else %}
+        <button class="btn btn-success" disabled>NEXT</button>
+        {% endif %}
+    </div>
+
+    <!--------------------------errors-------------------------->
+    {% for er in error %}
+    <div class="alert alert-danger">
+        <strong>Error!</strong> {{er}}
+    </div>
     {% endfor %}
-</table>
-<p>*Note: + means pay, - means get back</p>
+    <br>
+
+    <!--------------------------goods buy in month-------------------------->
+    <form method="post" class="panel panel-primary">
+        <div class="panel-heading"><h4><strong>Items</strong></h4></div>
+        <table class="table table-striped table-bordered table-hover">
+            <thead>
+            <tr>
+                <th>Date</th>
+                <th>Buyer</th>
+                <th>What</th>
+                <th>Price (K)</th>
+            </tr>
+            </thead>
+
+            <tbody>
+            {% for good in month.get_goods() %}
+            <tr>
+                <td>{{good.date.strftime("%d/%m/%y")}}</td>
+                <td>{{good.buyer}}</td>
+                <td>{{good.what}}</td>
+                <td>{{good.price}}</td>
+            </tr>
+            {% endfor %}
+
+            {% if not month.time_end %}
+            <tr>
+                <td><input type="submit" name="action" value="Add" class="btn btn-warning"></td>
+                <td><select name="buyer" required class="form-control">
+                    <option></option>
+                    {% for b in buyers %}
+                    <option value={{b.name}}>{{b.name}}</option>
+                    {% endfor %}
+                </select></td>
+                <td><input name="what" required class="form-control" placeholder="Enter what have been bought"></td>
+                <td><input name="price" type="number" min="1" required class="form-control" placeholder="Enter price">
+                </td>
+            </tr>
+            {% endif %}
+
+            </tbody>
+        </table>
+    </form>
+
+    <!--------------------------------end month------------------------------------>
+    {% if not month.time_end %}
+    <form method="post" class="alert alert-danger" style="padding:30px 20px;font-size:120%"
+          onsubmit="return confirm('Do you really want end this month?');">
+        <input type="submit" name="action" value="END MONTH" class="btn btn-danger" style="align:right">
+        <strong style="font-size:120%">&nbsp; &nbsp;&nbsp;&nbsp; &nbsp; Warning!</strong>
+        <span style="font-size:120%">No data can be added to this month after ending</span>
+    </form>
+    {% endif %}
+
+    <!-----------------------------summarize------------------------------>
+    <div class="panel panel-primary">
+        <div class="panel-heading"><h4><strong>Summarize</strong></h4></div>
+        <table class="table table-striped table-bordered table-hover">
+            <tr>
+                <td>Total spend in month</td>
+                <td>{{month.spend}}</td>
+            </tr>
+            <tr>
+                <td>Last month left</td>
+                <td>{{month.last_month_left}}</td>
+            </tr>
+            <tr>
+                <td>Money to pay</td>
+                <td>{{month.total_money}}</td>
+            </tr>
+            <tr>
+                <td>Average</td>
+                <td>{{month.average}}</td>
+            </tr>
+            <tr>
+                <td>Round up</td>
+                <td>{{month.roundup}}</td>
+            </tr>
+            <tr>
+                <td>Money left for next month</td>
+                <td>{{month.next_month_left}}</td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="panel panel-primary">
+        <div class="panel-heading"><h4><strong>Payments</strong></h4></div>
+        <table class="table table-striped table-bordered table-hover">
+            <thead>
+            <tr>
+                <th>Name</th>
+                <th>Money spend in month</th>
+                <th>Payment</th>
+            </tr>
+            </thead>
+
+            <tbody>
+            {% for buyer in buyers %}
+            <tr>
+                <td>{{buyer.name}}</td>
+                <td>{{buyer.money}}</td>
+                <td>{{buyer.charge}}</td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="alert alert-info">
+        <strong>Note</strong>
+        <ul>
+            <li>Positive value means pay</li>
+            <li>Negative value means get paid back</li>
+        </ul>
+    </div>
+</div>
 
 {% endblock %}

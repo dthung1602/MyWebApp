@@ -101,6 +101,11 @@ class Monthly(Handler):
         self.render_current_month(month)
 
     def end_month(self, old_month):
+        # check if old_month has already ended
+        if old_month.time_end is not None:
+            self.render_current_month(old_month, ["This month has already ended."])
+            return
+
         # create new month
         new_month = Month(last_month_left=old_month.next_month_left)
         new_month.prev_month = old_month.key().id()

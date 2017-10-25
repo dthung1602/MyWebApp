@@ -2,24 +2,40 @@
 
 {% block body %}
 
-<h1>Money Home</h1>
+<div class="jumbotron">
+    <h1 style="padding-bottom:25px;padding-left:50px">Monthly money calculation</h1>
+</div>
 
-{% for er in error %}
-<p>{{er}}</p>
-{% endfor %}
-
-{% if months %}
-<ul>
-    {% for m in months %}
-    <li><a href="{{__host__}}/moneyM1522/{{m.key().id()}}">{{m.to_string_short()}} ({{m.to_string_long()}})</a></li>
+<div class="container">
+    <!--------------------------errors-------------------------->
+    {% for er in error %}
+    <div class="alert alert-danger">
+        <strong>Error!</strong> {{er}}
+    </div>
     {% endfor %}
-</ul>
-{% else %}
-<form method="post">
-    <p>There are currently no data.</p>
-    <p> Click below button to add new month</p>
-    <button>New month</button>
-</form>
-{% endif %}
+    <br>
+
+    <!------------------------list all months------------------->
+    {% if months %}
+    <div class="list-group">
+        {% for m in months %}
+        <a class="list-group-item" href="{{__host__}}/moneyM1522/{{m.key().id()}}">
+            {{m.to_string_short()}} ({{m.to_string_long()}})
+            {% if m.time_end == None %}
+            <span class="badge" style="background-color:green">current month</span>
+            {% endif %}
+        </a>
+        {% endfor %}
+    </div>
+
+    <!--------------------------new months------------------->
+    {% else %}
+    <form method="post">
+        <p>There are currently no data.</p>
+        <p> Click below button to add new month</p>
+        <button>New month</button>
+    </form>
+    {% endif %}
+</div>
 
 {% endblock %}
