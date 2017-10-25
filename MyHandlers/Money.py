@@ -8,8 +8,11 @@ from google.appengine.ext import db
 from Handler import Handler
 
 
-class MoneyHome(Handler):
+class Home(Handler):
+    """Handle home page"""
+
     def get(self):
+        """Render home page"""
         query = db.GqlQuery("SELECT * FROM Month ORDER BY time_begin DESC")
         months = [m for m in query]
         if len(months) == 0:
@@ -18,7 +21,13 @@ class MoneyHome(Handler):
             self.render("money_home.html", months=months)
 
     def post(self):
-        # todo check empty months
+        """Create first new month"""
+        # check if Month is empty
+        if len(list(db.GqlQuery("SELECT * FROM Month"))) != 0:
+            self.render("money_home.html", error="New month is created automatically when user ends current month.")
+            return
+
+        # new month
         month = Month(last_month_left=0)
         month.put()
         month.update()
@@ -26,8 +35,11 @@ class MoneyHome(Handler):
         self.redirect("/moneyM1522/{}".format(month.key().id()))
 
 
-class MoneyMonth(Handler):
+class Monthly(Handler):
+    """Handle request for a particular month"""
+
     def get(self, month_id):
+        """Get month info and render html"""
         month = Month.get_by_id(int(month_id))
         if month is None:
             self.redirect("/moneyM1522/home")
@@ -35,8 +47,9 @@ class MoneyMonth(Handler):
             self.render_current_month(month)
 
     def post(self, month_id):
+        """Handle 2 actions: add new Good & end current month"""
         month = Month.get_by_id(int(month_id))
-        if month is None:
+        if month is None:  # invalid month id
             self.redirect("/moneyM1522/home")
         else:
             if self.request.get("action") == "Add":
@@ -44,26 +57,47 @@ class MoneyMonth(Handler):
             else:
                 self.end_month(month)
 
-    def render_current_month(self, month):
+    def render_current_month(self, month, error=[]):
         buyers = list(Buyer.get_all_buyers())
 
+        # calculate and put attributes to buyer objects
         for buyer in buyers:
             buyer.money = buyer.get_money_in_month(month)
             buyer.charge = month.roundup - buyer.money
 
-        self.render("money_current_month.html", month=month, buyers=buyers)
+        self.render("money_current_month.html", month=month, buyers=buyers, error=error,
+                    __page_title__=month.to_string_short())
 
     def add_good(self, month):
-        # todo validate info
-        good = Good(
-            month_id=month.key().id(),
-            price=int(self.request.get("price")),
-            what=self.request.get("what"),
-            buyer=self.request.get("buyer")
-        )
+        # get info
+        month_id = month.key().id()
+        price = self.request.get("price")
+        what = self.request.get("what")
+        buyer = self.request.get("buyer")
+
+        # validate
+        error = []
+        if None in [month_id, price, what, buyer]:
+            error.append("Please fill all information")
+        if Month.get_by_id(month_id) is None:
+            error.append("Invalid month")
+        if buyer not in [b.name for b in Buyer.get_all_buyers()]:
+            error.append("Invalid buyer")
+        try:
+            price = int(price)
+        except ValueError:
+            error.append("Price must be number")
+
+        if len(error) > 0:
+            self.render_current_month(month, error)
+            return
+
+        # put to database
+        good = Good(month_id=month_id, price=price, what=what, buyer=buyer)
         good.put()
+        time.sleep(0.5)
         month.update()
-        time.sleep(1)
+        time.sleep(0.5)
         self.render_current_month(month)
 
     def end_month(self, old_month):
@@ -78,7 +112,7 @@ class MoneyMonth(Handler):
         old_month.next_month = new_month.key().id()
         old_month.put()
 
-        time.sleep(1)
+        time.sleep(0.8)
         self.render_current_month(old_month)
 
 
@@ -127,11 +161,15 @@ class Month(db.Model):
         self.next_month_left = self.roundup * len(buyers) - self.total_money
         self.put()
 
-    def to_string(self):
+    def to_string_short(self):
         new_time = self.time_begin + timedelta(days=4)
         if new_time.month != self.time_begin.month:
             return new_time.month.strftime("%B %Y")
         return self.time_begin.strftime("%B %Y")
+
+    def to_string_long(self):
+        return self.time_begin.strftime("%d/%m/%y") + " - " + \
+               (self.time_end.strftime("%d/%m/%y") if self.time_end is not None else "now")
 
     def get_goods(self):
         return db.GqlQuery("SELECT * FROM Good WHERE month_id={} ORDER BY date ASC".format(self.key().id()))

@@ -4,10 +4,14 @@
 
 <h1>Money Home</h1>
 
+{% for er in error %}
+<p>{{er}}</p>
+{% endfor %}
+
 {% if months %}
 <ul>
     {% for m in months %}
-    <li><a href="{{__host__}}/moneyM1522/{{m.key().id()}}">{{m.to_string()}}</a></li>
+    <li><a href="{{__host__}}/moneyM1522/{{m.key().id()}}">{{m.to_string_short()}} ({{m.to_string_long()}})</a></li>
     {% endfor %}
 </ul>
 {% else %}

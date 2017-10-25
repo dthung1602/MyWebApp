@@ -24,8 +24,9 @@
 <a href="{{__host__}}/moneyM1522/{{month.next_month}}">Next month</a>
 {% endif %}
 
-
-<p><i><b>{{error}}</b></i></p>
+{% for er in error %}
+<p>{{er}}</p>
+{% endfor %}
 <br>
 
 <!-----------------------links----------------------------->
@@ -53,13 +54,13 @@
         {% if not month.time_end %}
         <tr>
             <td><input type="submit" name="action" value="Add"></td>
-            <td><select name="buyer">
+            <td><select name="buyer" required>
                 {% for b in buyers %}
                 <option value={{b.name}}>{{b.name}}</option>
                 {% endfor %}
             </select></td>
-            <td><input name="what"></td>
-            <td><input name="price" type="number" min="1"> K</td>
+            <td><input name="what" required></td>
+            <td><input name="price" type="number" min="1" required> K</td>
         </tr>
         {% endif %}
     </table>
