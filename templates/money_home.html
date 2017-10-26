@@ -9,9 +9,11 @@
 <div class="container">
     <!--------------------------errors-------------------------->
     {% for er in error %}
+    <br><br>
     <div class="alert alert-danger">
         <strong>Error!</strong> {{er}}
     </div>
+    <br><br>
     {% endfor %}
     <br>
 
@@ -30,10 +32,10 @@
 
     <!--------------------------new months------------------->
     {% else %}
-    <form method="post">
-        <p>There are currently no data.</p>
-        <p> Click below button to add new month</p>
-        <button>New month</button>
+    <form method="post" class="alert alert-info" style="width:50%">
+        <h4>There are currently no data.</h4>
+        <h4> Click below button to add new month</h4>
+        <button class="btn btn-success" style="margin-top:15px">New month</button>
     </form>
     {% endif %}
 </div>

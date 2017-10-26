@@ -16,15 +16,16 @@ class Home(Handler):
         query = db.GqlQuery("SELECT * FROM Month ORDER BY time_begin DESC")
         months = [m for m in query]
         if len(months) == 0:
-            self.render("money_home.html")
+            self.render("money_home.html", __page_title__="Monthly money calculation")
         else:
-            self.render("money_home.html", months=months)
+            self.render("money_home.html", months=months, __page_title__="Monthly money calculation")
 
     def post(self):
         """Create first new month"""
         # check if Month is empty
         if len(list(db.GqlQuery("SELECT * FROM Month"))) != 0:
-            self.render("money_home.html", error="New month is created automatically when user ends current month.")
+            self.render("money_home.html", error=["New month is created automatically when user ends current month."],
+                        __page_title__="Monthly money calculation")
             return
 
         # new month

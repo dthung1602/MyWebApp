@@ -20,9 +20,3 @@ indexes:
   properties:
   - name: month_id
   - name: date
-
-- kind: Good
-  properties:
-  - name: month_id
-  - name: date
-    direction: desc
