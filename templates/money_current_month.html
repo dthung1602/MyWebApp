@@ -63,7 +63,7 @@
             {% for good in month.get_goods() %}
             <tr>
                 <td style="text-align:center">{{good.date.strftime("%d/%m/%y")}}</td>
-                <td>{{good.buyer}}</td>
+                <td>{{good.buyer_name}}</td>
                 <td>{{good.what}}</td>
                 <td style="text-align:right">{{good.price}}</td>
             </tr>
@@ -80,7 +80,7 @@
                 <td><select name="buyer" required class="form-control">
                     <option></option>
                     {% for b in buyers %}
-                    <option value={{b.name}}>{{b.name}}</option>
+                    <option value={{b.key().id()}}>{{b.name}}</option>
                     {% endfor %}
                 </select></td>
                 <td><input name="what" required class="form-control" placeholder="Enter what have been bought"></td>
@@ -143,9 +143,9 @@
         <table class="table table-striped table-bordered table-hover">
             <thead>
             <tr>
-                <th>Name</th>
-                <th>Money spend in month</th>
-                <th>Payment</th>
+                <th style="text-align:center">Name</th>
+                <th style="text-align:center">Money spend in month</th>
+                <th style="text-align:center">Payment</th>
             </tr>
             </thead>
 

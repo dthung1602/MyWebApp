@@ -78,16 +78,20 @@ class Monthly(Handler):
 
         # validate
         error = []
-        if None in [month_id, price, what, buyer]:
+        if None in [price, what, buyer]:
             error.append("Please fill all information")
-        if Month.get_by_id(month_id) is None:
-            error.append("Invalid month")
-        if buyer not in [b.name for b in Buyer.get_all_buyers()]:
+        try:
+            buyer = int(buyer)
+            if Buyer.get_by_id(buyer) is None:
+                raise
+        except ValueError:
             error.append("Invalid buyer")
         try:
             price = int(price)
+            if price <= 0:
+                raise
         except ValueError:
-            error.append("Price must be number")
+            error.append("Price must be a positive integer")
 
         if len(error) > 0:
             self.render_current_month(month, error)
@@ -135,7 +139,7 @@ class Buyer(db.Model):
 
     def get_money_in_month(self, month):
         goods = db.GqlQuery(
-            "SELECT * FROM Good WHERE month_id={} AND buyer='{}' ORDER BY date ASC".format(month.key().id(), self.name))
+            "SELECT * FROM Good WHERE month_id={} AND buyer={} ORDER BY date ASC".format(month.key().id(), self.key().id()))
         return sum(good.price for good in goods)
 
 
@@ -178,7 +182,11 @@ class Month(db.Model):
                (self.time_end.strftime("%d/%m/%y") if self.time_end is not None else "now")
 
     def get_goods(self):
-        return db.GqlQuery("SELECT * FROM Good WHERE month_id={} ORDER BY date ASC".format(self.key().id()))
+        goods = []
+        for good in db.GqlQuery("SELECT * FROM Good WHERE month_id={} ORDER BY date ASC".format(self.key().id())):
+            good.buyer_name = Buyer.get_by_id(int(good.buyer)).name
+            goods.append(good)
+        return goods
 
     def sum(self):
         return sum(good.price for good in self.get_goods())
@@ -189,4 +197,4 @@ class Good(db.Model):
     date = db.DateTimeProperty(auto_now_add=True)
     price = db.IntegerProperty(required=True)
     what = db.StringProperty(required=True)
-    buyer = db.StringProperty(required=True)
+    buyer = db.IntegerProperty(required=True)

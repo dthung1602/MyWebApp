@@ -18,6 +18,7 @@ Handler.handlers = [
     ('/blog/([0-9]+)', Blog.BlogHandler, False),
     ('/blog/newpost', Blog.NewPostHandler, False),
 
+    ('/moneyM1522/', Money.Home, True),
     ('/moneyM1522/home', Money.Home, True),
     ('/moneyM1522/([0-9]+)', Money.Monthly, False),
 ]
