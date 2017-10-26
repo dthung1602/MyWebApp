@@ -23,16 +23,17 @@ class Home(Handler):
     def post(self):
         """Create first new month"""
         # check if Month is empty
-        if len(list(db.GqlQuery("SELECT * FROM Month"))) != 0:
+        query = db.GqlQuery("SELECT * FROM Month ORDER BY time_begin DESC")
+        months = [m for m in query]
+        if len(months) != 0:
             self.render("money_home.html", error=["New month is created automatically when user ends current month."],
-                        __page_title__="Monthly money calculation")
+                        __page_title__="Monthly money calculation", months=months)
             return
 
         # new month
         month = Month(last_month_left=0)
-        month.put()
         month.update()
-        time.sleep(0.2)
+        time.sleep(0.8)
         self.redirect("/moneyM1522/{}".format(month.key().id()))
 
 
