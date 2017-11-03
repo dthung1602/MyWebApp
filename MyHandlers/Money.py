@@ -9,6 +9,10 @@ from google.appengine.ext import db
 from Handler import Handler
 
 
+#############################################################
+#                Request Handler classes                    #
+#############################################################
+
 class Home(Handler):
     """Handle home page"""
 
@@ -61,6 +65,7 @@ class Monthly(Handler):
                 self.end_month(month)
 
     def render_current_month(self, month, error=[]):
+        """Render money_current_month.html"""
         buyers = list(Buyer.get_all_buyers())
 
         # calculate and put attributes to buyer objects
@@ -72,6 +77,7 @@ class Monthly(Handler):
                     __page_title__=month.to_string_short())
 
     def add_good(self, month):
+        """add a good to database"""
         # get info
         month_id = month.key().id()
         price = self.request.get("price")
@@ -97,7 +103,7 @@ class Monthly(Handler):
             price = eval(price)
             if price <= 0 or not isinstance(price, int):
                 raise ValueError
-        except SyntaxError:
+        except (SyntaxError, ZeroDivisionError):
             error.append("Invalid arithmetic expression in field price")
         except ValueError:
             error.append("Price must be a positive integer")
@@ -115,6 +121,10 @@ class Monthly(Handler):
         self.render_current_month(month)
 
     def end_month(self, old_month):
+        """
+            add time_end to old month, making its data can not be change;
+            create a new month
+        """
         # check if old_month has already ended
         if old_month.time_end is not None:
             self.render_current_month(old_month, ["This month has already ended."])
