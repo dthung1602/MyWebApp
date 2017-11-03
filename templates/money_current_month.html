@@ -8,6 +8,7 @@
     {% if month.time_end %}
     <p style="padding-left:70px"><i>End date : {{month.time_end.strftime("%d/%m/%y")}}</i></p>
     {% endif %}
+    <p style="text-align:right;padding-right:30px;font-size:100%;margin-bottom:0"><i>version 1.1</i></p>
 </div>
 
 <div class="container">
@@ -85,13 +86,24 @@
                 </select></td>
                 <td><input name="what" required class="form-control" placeholder="Enter what have been bought"></td>
                 <td style="width:25%">
-                    <input name="price" type="number" min="1" required class="form-control" placeholder="Enter price">
+                    <input name="price" title="Arithmetic expression with + - * / ()" pattern="^[0-9 \+\-\*\/\(\)]+$"
+ required class="form-control" placeholder="Enter price">
                 </td>
             </tr>
             {% endif %}
             </tfoot>
         </table>
     </form>
+    <br><br>
+
+    <!--------------------------------guidance for price------------------------------------>
+    <div class="alert alert-info" style="font-size:120%">
+        <strong>Note</strong>
+        <ul>
+            <li>Price field can act as a calculator</li>
+            <li>Currently supported operations: () + - * /</li>
+        </ul>
+    </div>
     <br><br>
 
     <!--------------------------------end month------------------------------------>
@@ -102,7 +114,7 @@
         <strong style="font-size:120%">&nbsp; &nbsp;&nbsp;&nbsp; &nbsp; Warning!</strong>
         <span style="font-size:120%">No data can be added to this month after ending</span>
     </form>
-    <br><br><br>
+    <br><br><br><br>
     {% endif %}
 
     <!-----------------------------summarize------------------------------>
@@ -161,7 +173,7 @@
         </table>
     </div>
 
-    <div class="alert alert-info">
+    <div class="alert alert-info" style="font-size:120%">
         <strong>Note</strong>
         <ul>
             <li>Positive value means pay</li>

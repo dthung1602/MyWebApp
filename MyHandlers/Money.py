@@ -1,4 +1,5 @@
 import math
+import re
 import time
 from datetime import datetime
 from datetime import timedelta
@@ -79,18 +80,25 @@ class Monthly(Handler):
 
         # validate
         error = []
+        # check for empty fields
         if None in [price, what, buyer]:
             error.append("Please fill all information")
+        # check if buyer exists
         try:
             buyer = int(buyer)
             if Buyer.get_by_id(buyer) is None:
                 raise
         except ValueError:
             error.append("Invalid buyer")
+        # evaluate price
         try:
-            price = int(price)
-            if price <= 0:
-                raise
+            if not re.match("^[0-9 \-+*/()]+$", price):
+                raise SyntaxError
+            price = eval(price)
+            if price <= 0 or not isinstance(price, int):
+                raise ValueError
+        except SyntaxError:
+            error.append("Invalid arithmetic expression in field price")
         except ValueError:
             error.append("Price must be a positive integer")
 
