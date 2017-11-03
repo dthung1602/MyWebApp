@@ -31,9 +31,9 @@ class Home(Handler):
             return
 
         # new month
-        month = Month(last_month_left=0)
-        month.update()
-        time.sleep(0.8)
+        month = Month(last_month_left=0, spend=0, total_money=0, average=0.0, roundup=0, next_month_left=0)
+        month.put()
+        time.sleep(0.6)
         self.redirect("/moneyM1522/{}".format(month.key().id()))
 
 
@@ -140,7 +140,8 @@ class Buyer(db.Model):
 
     def get_money_in_month(self, month):
         goods = db.GqlQuery(
-            "SELECT * FROM Good WHERE month_id={} AND buyer={} ORDER BY date ASC".format(month.key().id(), self.key().id()))
+            "SELECT * FROM Good WHERE month_id={} AND buyer={} ORDER BY date ASC".format(month.key().id(),
+                                                                                         self.key().id()))
         return sum(good.price for good in goods)
 
 
@@ -167,7 +168,7 @@ class Month(db.Model):
         buyers = list(Buyer.get_all_buyers())
         self.spend = self.sum()
         self.total_money = self.spend - self.last_month_left
-        self.average = self.total_money * 1.0 / len(buyers)
+        self.average = (self.total_money * 1.0 / len(buyers)) if len(buyers) > 0 else 0.0
         self.roundup = self.round_up(self.average)
         self.next_month_left = self.roundup * len(buyers) - self.total_money
         self.put()
