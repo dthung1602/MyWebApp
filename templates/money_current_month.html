@@ -96,6 +96,7 @@
     </form>
     <br><br>
 
+    {% if not month.time_end %}
     <!--------------------------------guidance for price------------------------------------>
     <div class="alert alert-info" style="font-size:120%">
         <strong>Note</strong>
@@ -107,7 +108,6 @@
     <br><br>
 
     <!--------------------------------end month------------------------------------>
-    {% if not month.time_end %}
     <form method="post" class="alert alert-danger" style="padding:30px 20px;font-size:120%"
           onsubmit="return confirm('Do you really want to end this month?');">
         <input type="submit" name="action" value="END MONTH" class="btn btn-danger" style="align:right">
