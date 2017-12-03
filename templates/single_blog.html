@@ -1,11 +1,12 @@
-<div class="single_blog">
-    <div class="blog_title"><a href="{{__host__}}/blog/{{blog_id}}">{{blog.title}}</a></div>
-    <div class="blog_time">Created: {{blog.created_time.strftime('%d, %b %Y')}}</div>
-    <div class="blog_time">Last modified: {{blog.last_modified.strftime('%d, %b %Y')}}</div>
-    <br>
-    {% if full %}
-    <div class="blog_content">{{blog.render_content() | safe}}</div>
-    {% else %}
-    <div class="blog_content">{{blog.get_description()}}</div>
-    {% endif %}
+<div class="jumbotron">
+    <h1><a href="{{__host__}}/blog/{{blog_id}}">{{blog.title}}</a></h1>
 </div>
+
+<div class="blog_time">Created: {{blog.created_time.strftime('%d, %b %Y')}}</div>
+<div class="blog_time">Last modified: {{blog.last_modified.strftime('%d, %b %Y')}}</div>
+<br>
+{% if full %}
+<div class="blog_content">{{blog.render_content() | safe}}</div>
+{% else %}
+<div class="blog_content">{{blog.get_description()}}</div>
+{% endif %}
