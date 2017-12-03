@@ -36,9 +36,7 @@ class Home(Handler):
             return
 
         # new month
-        month = Month(last_month_left=0, spend=0, total_money=0, average=0.0, roundup=0, next_month_left=0)
-        month.put()
-        time.sleep(0.6)
+        month = Month.new_month()
         self.redirect("/moneyM1522/{}".format(month.key().id()))
 
 
@@ -69,9 +67,17 @@ class Monthly(Handler):
         buyers = list(Buyer.get_all_buyers())
 
         # calculate and put attributes to buyer objects
+        usage = {}
+        for u in MoneyUsage.get_usage_in_month(month):
+            usage[u.buyer_id] = u
+
         for buyer in buyers:
-            buyer.money = buyer.get_money_in_month(month)
-            buyer.charge = month.roundup - buyer.money
+            u = usage[buyer.key().id()]
+            buyer.money = u.money_spend
+            buyer.last_month_left = u.last_month_left
+            buyer.charge = u.money_to_pay
+            buyer.roundup = u.roundup
+            buyer.next_month_left = u.next_month_left
 
         self.render("money_current_month.html", month=month, buyers=buyers, error=error,
                     __page_title__=month.to_string_short())
@@ -93,7 +99,7 @@ class Monthly(Handler):
         try:
             buyer = int(buyer)
             if Buyer.get_by_id(buyer) is None:
-                raise
+                raise ValueError
         except ValueError:
             error.append("Invalid buyer")
         # evaluate price
@@ -116,8 +122,8 @@ class Monthly(Handler):
         good = Good(month_id=month_id, price=price, what=what, buyer=buyer)
         good.put()
         time.sleep(0.5)
+        MoneyUsage.update(good)
         month.update()
-        time.sleep(0.5)
         self.render_current_month(month)
 
     def end_month(self, old_month):
@@ -131,10 +137,7 @@ class Monthly(Handler):
             return
 
         # create new month
-        new_month = Month(last_month_left=old_month.next_month_left)
-        new_month.prev_month = old_month.key().id()
-        new_month.put()
-        new_month.update()
+        new_month = Month.new_month(old_month)
 
         # end old month
         old_month.time_end = datetime.now()
@@ -148,6 +151,10 @@ class Monthly(Handler):
 #############################################################
 #                     Database classes                      #
 #############################################################
+
+def round_up(n):
+    return int(math.ceil(n / 10.0) * 10)
+
 
 class Buyer(db.Model):
     name = db.StringProperty(required=True)
@@ -179,17 +186,52 @@ class Month(db.Model):
     prev_month = db.IntegerProperty()
 
     @staticmethod
-    def round_up(n):
-        return int(math.ceil(n / 10) * 10)
+    def new_month(old_month=None):
+        # create new month
+        month = Month(last_month_left=0, spend=0, total_money=0, average=0.0, roundup=0, next_month_left=0)
+        buyers = list(Buyer.get_all_buyers())
+
+        # link new month to old month
+        old_month_money_usages = {}
+        if old_month is not None:
+            month.prev_month = old_month.key().id()
+            month.last_month_left = month.next_month_left = old_month.next_month_left
+            month.total_money = -month.last_month_left
+            month.average = (-month.last_month_left * 1.0 / len(buyers)) if len(buyers) > 0 else 0.0
+            month.roundup = -month.last_month_left
+            usages = MoneyUsage.get_usage_in_month(old_month)
+            old_month_money_usages = {usage.buyer_id: usage.next_month_left for usage in usages}
+
+        month.put()
+        time.sleep(0.3)
+
+        # create corresponding money usage for each user in this month
+        for buyer in buyers:
+            bid = buyer.key().id()
+            last_month_left = old_month_money_usages.get(bid, 0.0)
+            money_usage = MoneyUsage(
+                buyer_id=bid,
+                month_id=month.key().id(),
+                last_month_left=last_month_left,
+                next_month_left=last_month_left,
+                money_spend=0,
+                money_to_pay=-last_month_left,
+                roundup=0
+            )
+            money_usage.put()
+
+        time.sleep(1)
+        return month
 
     def update(self):
         buyers = list(Buyer.get_all_buyers())
         self.spend = self.sum()
         self.total_money = self.spend - self.last_month_left
         self.average = (self.total_money * 1.0 / len(buyers)) if len(buyers) > 0 else 0.0
-        self.roundup = self.round_up(self.average)
-        self.next_month_left = self.roundup * len(buyers) - self.total_money
+        # todo self.r
+        self.next_month_left = int(sum([usage.next_month_left for usage in MoneyUsage.get_usage_in_month(self)]))
         self.put()
+        time.sleep(0.5)
 
     def to_string_short(self):
         new_time = self.time_begin + timedelta(days=4)
@@ -218,3 +260,32 @@ class Good(db.Model):
     price = db.IntegerProperty(required=True)
     what = db.StringProperty(required=True)
     buyer = db.IntegerProperty(required=True)
+
+
+class MoneyUsage(db.Model):
+    buyer_id = db.IntegerProperty(required=True)
+    month_id = db.IntegerProperty(required=True)
+
+    last_month_left = db.FloatProperty(required=True)
+    next_month_left = db.FloatProperty(required=True)
+
+    money_spend = db.IntegerProperty(required=True)
+    money_to_pay = db.FloatProperty(required=True)
+    roundup = db.IntegerProperty(required=True)
+
+    @staticmethod
+    def get_usage_in_month(month):
+        return db.GqlQuery("SELECT * FROM MoneyUsage WHERE month_id={}".format(month.key().id()))
+
+    @staticmethod
+    def update(good):
+        price = good.price * 1.0 / len(list(Buyer.get_all_buyers()))
+        for usage in db.GqlQuery("SELECT * FROM MoneyUsage WHERE month_id={}".format(good.month_id)):
+            usage.money_to_pay += price
+            if usage.buyer_id == good.buyer:
+                usage.money_spend += good.price
+                usage.money_to_pay -= good.price
+            usage.roundup = round_up(usage.money_to_pay)
+            usage.next_month_left = usage.roundup - usage.money_to_pay
+            usage.put()
+        time.sleep(0.8)
