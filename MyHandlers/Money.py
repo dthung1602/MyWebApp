@@ -6,14 +6,30 @@ from datetime import timedelta
 
 from google.appengine.ext import db
 
-from Handler import Handler
+import Handler
+from Handler import Handler as Hl
 
 
 #############################################################
 #                Request Handler classes                    #
 #############################################################
 
-class Home(Handler):
+def round_up10(n):
+    return int(math.ceil(n / 10.0) * 10)
+
+
+def round_float(f):
+    return "{0:.2f}".format(f)
+
+
+Handler.jinja_env.globals['round_float'] = round_float
+
+
+#############################################################
+#                Request Handler classes                    #
+#############################################################
+
+class Home(Hl):
     """Handle home page"""
 
     def get(self):
@@ -40,7 +56,7 @@ class Home(Handler):
         self.redirect("/moneyM1522/{}".format(month.key().id()))
 
 
-class Monthly(Handler):
+class Monthly(Hl):
     """Handle request for a particular month"""
 
     def get(self, month_id):
@@ -79,7 +95,7 @@ class Monthly(Handler):
             buyer.roundup = u.roundup
             buyer.next_month_left = u.next_month_left
 
-        self.render("money_current_month.html", month=month, buyers=buyers, error=error,
+        self.render("money_current_month.html", month=month, buyers=buyers, error=error, round_float=round_float,
                     __page_title__=month.to_string_short())
 
     def add_good(self, month):
@@ -152,10 +168,6 @@ class Monthly(Handler):
 #                     Database classes                      #
 #############################################################
 
-def round_up(n):
-    return int(math.ceil(n / 10.0) * 10)
-
-
 class Buyer(db.Model):
     name = db.StringProperty(required=True)
 
@@ -177,7 +189,6 @@ class Month(db.Model):
     spend = db.IntegerProperty()
     total_money = db.IntegerProperty()
     average = db.FloatProperty()
-    roundup = db.IntegerProperty()
 
     time_begin = db.DateTimeProperty(auto_now_add=True)
     time_end = db.DateTimeProperty()
@@ -188,7 +199,7 @@ class Month(db.Model):
     @staticmethod
     def new_month(old_month=None):
         # create new month
-        month = Month(last_month_left=0, spend=0, total_money=0, average=0.0, roundup=0, next_month_left=0)
+        month = Month(last_month_left=0, spend=0, total_money=0, average=0.0, next_month_left=0)
         buyers = list(Buyer.get_all_buyers())
 
         # link new month to old month
@@ -198,7 +209,6 @@ class Month(db.Model):
             month.last_month_left = month.next_month_left = old_month.next_month_left
             month.total_money = -month.last_month_left
             month.average = (-month.last_month_left * 1.0 / len(buyers)) if len(buyers) > 0 else 0.0
-            month.roundup = -month.last_month_left
             usages = MoneyUsage.get_usage_in_month(old_month)
             old_month_money_usages = {usage.buyer_id: usage.next_month_left for usage in usages}
 
@@ -228,7 +238,6 @@ class Month(db.Model):
         self.spend = self.sum()
         self.total_money = self.spend - self.last_month_left
         self.average = (self.total_money * 1.0 / len(buyers)) if len(buyers) > 0 else 0.0
-        # todo self.r
         self.next_month_left = int(sum([usage.next_month_left for usage in MoneyUsage.get_usage_in_month(self)]))
         self.put()
         time.sleep(0.5)
@@ -285,7 +294,7 @@ class MoneyUsage(db.Model):
             if usage.buyer_id == good.buyer:
                 usage.money_spend += good.price
                 usage.money_to_pay -= good.price
-            usage.roundup = round_up(usage.money_to_pay)
+            usage.roundup = round_up10(usage.money_to_pay)
             usage.next_month_left = usage.roundup - usage.money_to_pay
             usage.put()
         time.sleep(0.8)
