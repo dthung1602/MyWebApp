@@ -1,0 +1,2 @@
+export GOOGLE_APPLICATION_CREDENTIALS=/media/hung/DATA1/PYTHON/Workspace/GoogleAppEngine/WebApp-546d92efe094.json
+./remote_api_shell.py -s webapp-173414.appspot.com
