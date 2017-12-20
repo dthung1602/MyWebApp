@@ -1,4 +1,5 @@
 import webapp2
+
 from MyHandlers import *
 
 Handler.handlers = [
@@ -21,6 +22,8 @@ Handler.handlers = [
     ('/moneyM1522/', Money.Home, None),
     ('/moneyM1522/home', Money.Home, "Money M15.22"),
     ('/moneyM1522/([0-9]+)', Money.Monthly, None),
+
+    ('/enigma', Enigma.EnigmaRequestHandler, "Enigma Simulator"),
 ]
 
 app = webapp2.WSGIApplication(Handler.handlers, debug=True)

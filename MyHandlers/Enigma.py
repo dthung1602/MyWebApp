@@ -6,9 +6,10 @@ from Handler import Handler as Hl
 
 class EnigmaRequestHandler(Hl):
     def get(self):
-        pass
+        self.render("enigma.html", __page_tittle__="Enigma Simulator")
 
     def post(self):
+
         pass
 
 
