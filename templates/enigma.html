@@ -6,11 +6,14 @@
 
 {% block body %}
 <h2>Enigma Simulator</h2>
-<form>
+
+<p style="color:red">{{error}}</p>
+
+<form method="post">
     <!--wheels-->
     {% for i in [1, 2, 3, 4] %}
     <label>Wheel {{i}}</label>
-    <select name="w{{I}}">
+    <select name="w{{i}}">
         <option value="I">I</option>
         <option value="II">II</option>
         <option value="III">III</option>
@@ -34,13 +37,16 @@
     <!--positions-->
     {% for i in [1, 2, 3, 4] %}
     <label>Poss {{i}}</label>
-    <select name="p{{I}}">
+    <select name="p{{i}}">
         {% for c in "ABCDEFGHIJKLMNOPQRSTUVWXYZ" %}
         <option value="{{c}}">{{c}}</option>
         {% endfor %}
     </select>
     {% endfor %}
     <br>
+
+    <!--plug board-->
+    <input type="hidden" name="pb" value="ABCDEFGHIJKLMNOPQRSTUVWXYZ">
 
     <label>Enter text:</label>
     <textarea name="text" rows=10 cols=120>{{text}}</textarea>
