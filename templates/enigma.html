@@ -32,7 +32,7 @@
     <label>Pos {{i}}</label>
     <select name="p{{i}}">
         {% for c in "ABCDEFGHIJKLMNOPQRSTUVWXYZ" %}
-        <option value="{{c}}" {% if p[i]== c %} selected {% endif %}>{{c}}</option>
+        <option value="{{c}}" {% if p[i] == c %} selected {% endif %}>{{c}}</option>
         {% endfor %}
     </select>
     {% endfor %}
@@ -66,6 +66,11 @@
     <br>
     <textarea name="text" rows=10 cols=120>{{text}}</textarea>
     <br><br>
+
+    <label>After encrypt/decrypt:</label> <br>
+    <input type="radio" name="reset" value="true" {% if rs %} checked {% endif %}> <label>Reset Enigma machine to init state</label>
+    <input type="radio" name="reset" value="false" {% if not rs %} checked {% endif %}> <label>Keep Enigma machine state</label>
+    <br>
 
     <input type="reset">
     <input type="submit">

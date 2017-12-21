@@ -20,7 +20,7 @@ class EnigmaRequestHandler(Hl):
             super(EnigmaRequestHandler, self).render(*args,
                                                      w=[None, 'I', 'II', 'III', 'IV'],
                                                      p=[None, 'A', 'A', 'A', 'A'],
-                                                     rw='B', pb={}, **kwargs)
+                                                     rw='B', pb={}, rs=False, **kwargs)
 
     def get(self):
         self.render("enigma.html")
@@ -40,18 +40,21 @@ class EnigmaRequestHandler(Hl):
         rw = self.request.get("rw")
         pb = [self.request.get(c) for c in uppercase]
 
+        rs = self.request.get("reset")
+
         # check if data is incomplete
-        attr_len = [len(pb), len(rw), len(w1), len(w2), len(w3), len(w4), len(p1), len(p2), len(p3), len(p4)]
+        attr_len = [len(pb), len(rw), len(w1), len(w2), len(w3), len(w4), len(p1), len(p2), len(p3), len(p4), len(rs)]
         if 0 in attr_len and sum(attr_len) > 0:
             self.render("enigma.html", error="Missing Enigma settings!")
             return
 
         # process string and render html
         try:
-            enigma = Enigma(w1, w2, w3, w4, p1, p2, p3, p4, rw, pb)
+            enigma = Enigma(w1, w2, w3, w4, p1, p2, p3, p4, rw, pb, rs)
             text = enigma.process_string(self.request.get("text"))
+            print(enigma.pos_state)
             self.render("enigma.html", text=text,
-                        w=[None, w1, w2, w3, w4], p=[None, p1, p2, p3, p4], rw=rw, pb=enigma.pb)
+                        w=[None, w1, w2, w3, w4], p=enigma.pos_state, rw=rw, pb=enigma.pb, rs=enigma.rs)
         except (ValueError, KeyError, IndexError, TypeError):
             self.render("enigma.html", error="Invalid Enigma settings!")
         except:
@@ -92,12 +95,13 @@ reflector_wheels = {
 
 
 class Enigma:
-    def __init__(self, w1, w2, w3, w4, p1, p2, p3, p4, rw, pb):
+    def __init__(self, w1, w2, w3, w4, p1, p2, p3, p4, rw, pb, rs):
         """
             @:param w[i]: wheel settings, range: I, II, ... VIII
             @:param p[i]: first letter settings, range: ABC...Z
             @:param rw: reflect wheel, range BC
             @:param pb: plug board setting, range: permutation of ABC...Z
+            @:param rs: whether to reset machine to init state
         """
 
         # wheels
@@ -122,6 +126,12 @@ class Enigma:
         self.rw = reflector_wheels[rw]
         self.pb = self.create_plug_board(pb)
 
+        # reset
+        self.rs = (rs == "true")
+        print("Reset" if self.rs else "Keep")
+        if self.rs:
+            self.pos_state = [None, p1, p2, p3, p4]
+
     def process_string(self, text):
         """encrypt/decrypt a string"""
         new_text = ""
@@ -129,6 +139,8 @@ class Enigma:
             new_text += self.process_char(char)
             if len(new_text) % 5 == 4:
                 new_text += " "
+        if not self.rs:
+            self.pos_state = [None] + [self.wheel[i][0] for i in xrange(4)]
         return new_text.strip()
 
     def process_char(self, char):
