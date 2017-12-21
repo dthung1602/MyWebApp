@@ -63,7 +63,7 @@ class Monthly(Hl):
         """Get month info and render html"""
         month = Month.get_by_id(int(month_id))
         if month is None:
-            self.redirect("/moneyM1522/home")
+            self.error(404)
         else:
             self.render_current_month(month)
 
@@ -71,7 +71,7 @@ class Monthly(Hl):
         """Handle 2 actions: add new Good & end current month"""
         month = Month.get_by_id(int(month_id))
         if month is None:  # invalid month id
-            self.redirect("/moneyM1522/home")
+            self.error(404)
         else:
             if self.request.get("action") == "Add":
                 self.add_good(month)

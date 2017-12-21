@@ -1,12 +1,13 @@
 import ASCIIArt
 import Blog
+import Enigma
+import ErrorHandler
 import Handler
 import MainPage
+import Money
 import Rot13
 import SignIn
 import SignOut
 import Signup
 import Test
 import Welcome
-import Money
-import Enigma

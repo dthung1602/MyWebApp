@@ -24,6 +24,9 @@ Handler.handlers = [
     ('/moneyM1522/([0-9]+)', Money.Monthly, None),
 
     ('/enigma', Enigma.EnigmaRequestHandler, "Enigma Simulator"),
+
+    # do not add path under this line
+    ('/(.*)', ErrorHandler.ErrorHandler, None)
 ]
 
 app = webapp2.WSGIApplication(Handler.handlers, debug=True)

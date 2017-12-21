@@ -71,7 +71,10 @@ class NewPostHandler(Handler.Handler):
 class BlogHandler(Handler.Handler):
     def get(self, blog_id):
         blog = Blog.get_by_id(int(blog_id))
-        self.render("blog.html", blog=blog)
+        if blog:
+            self.render("blog.html", blog=blog)
+        else:
+            self.error(404)
 
 
 class Blog(db.Model):
