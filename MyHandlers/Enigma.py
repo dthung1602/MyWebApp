@@ -31,7 +31,8 @@ class EnigmaRequestHandler(Hl):
             enigma = Enigma(w1, w2, w3, w4, p1, p2, p3, p4, rw, pb)
             text = enigma.process_string(self.request.get("text"))
             print(text)
-            self.render("enigma.html", __page_tittle__="Enigma Simulator", enigma=enigma, text=text)
+            self.render("enigma.html", __page_tittle__="Enigma Simulator", text=text,
+                        w=[None, w1, w2, w3, w4], p=[None, p1, p2, p3, p4], rw=rw, pb=pb)
         except (ValueError, KeyError, IndexError):
             self.render("enigma.html", __page_tittle__="Enigma Simulator", error="Invalid Enigma settings!")
         # except:
