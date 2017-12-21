@@ -17,6 +17,8 @@ __host__ = "http://localhost:8080"
 
 
 class Handler(webapp2.RequestHandler):
+    page_title = None
+
     def get_cookie_value(self, cookie_name, default_value=None):
         cookie_value = self.request.cookies.get(cookie_name, None)
         return unquote(cookie_value) if cookie_value else default_value
@@ -27,7 +29,9 @@ class Handler(webapp2.RequestHandler):
 
     def render_str(self, template, **kwargs):
         t = jinja_env.get_template(template)
-        __page_title__ = kwargs.get("__page_title__", self.__class__.__name__)
+        print(kwargs.get("__page_title__"))
+        __page_title__ = kwargs.get("__page_title__", self.__getattribute__("page_title"))
+        print(">" + __page_title__ + "*")
         return t.render(kwargs, __page_title__=__page_title__, __host__=__host__)
 
     def render(self, template, **kwargs):

@@ -7,6 +7,8 @@ from Handler import Handler as Hl
 class EnigmaRequestHandler(Hl):
     """Handle requests for enigma simulator"""
 
+    page_title = "Enigma Simulator"
+
     def render(self, *args, **kwargs):
         """
             Override supper method
@@ -21,7 +23,7 @@ class EnigmaRequestHandler(Hl):
                                                      rw='B', pb={c: c for c in uppercase}, **kwargs)
 
     def get(self):
-        self.render("enigma.html", __page_tittle__="Enigma Simulator")
+        self.render("enigma.html")
 
     def post(self):
         # get data
@@ -41,17 +43,17 @@ class EnigmaRequestHandler(Hl):
         # check if data is incomplete
         attr_len = [len(pb), len(rw), len(w1), len(w2), len(w3), len(w4), len(p1), len(p2), len(p3), len(p4)]
         if 0 in attr_len and sum(attr_len) > 0:
-            self.render("enigma.html", __page_tittle__="Enigma Simulator", error="Missing Enigma settings!")
+            self.render("enigma.html", error="Missing Enigma settings!")
             return
 
         # process string and render html
         try:
             enigma = Enigma(w1, w2, w3, w4, p1, p2, p3, p4, rw, pb)
             text = enigma.process_string(self.request.get("text"))
-            self.render("enigma.html", __page_tittle__="Enigma Simulator", text=text,
+            self.render("enigma.html", text=text,
                         w=[None, w1, w2, w3, w4], p=[None, p1, p2, p3, p4], rw=rw, pb=enigma.pb)
         except (ValueError, KeyError, IndexError, TypeError):
-            self.render("enigma.html", __page_tittle__="Enigma Simulator", error="Invalid Enigma settings!")
+            self.render("enigma.html", error="Invalid Enigma settings!")
         except:
             self.error(500)
 

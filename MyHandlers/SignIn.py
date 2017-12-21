@@ -18,6 +18,8 @@ def set_login_cookie(handler, username):
 
 
 class SignIn(Handler.Handler):
+    page_title = "Sign in"
+
     def get(self):
         error = self.get_cookie_value("general_signin_errors")
 

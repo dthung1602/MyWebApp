@@ -6,6 +6,8 @@ def reset_login_cookie(handler):
 
 
 class SignOut(Handler.Handler):
+    page_title = "Sign out"
+
     def get(self):
         reset_login_cookie(self)
         self.redirect("/signin")

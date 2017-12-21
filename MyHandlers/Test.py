@@ -6,6 +6,8 @@ SECRET = "blah blah blah"
 
 
 class Test(Handler):
+    page_title = "Test cookie"
+
     @staticmethod
     def make_secure(s):
         return s + "|" + hmac.new(SECRET, s).hexdigest()

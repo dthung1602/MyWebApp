@@ -1,9 +1,5 @@
 {% extends "base.html" %}
 
-{% block title %}
-<title>Enigma Simulator</title>
-{% endblock %}
-
 {% block body %}
 <h2>Enigma Simulator</h2>
 
@@ -13,7 +9,7 @@
     <!--wheels-->
     {% for i in [1, 2, 3, 4] %}
     <label>Wheel {{i}}</label>
-    <select name="w{{i}}">
+    <select name="w{{i}}" onchange="checkWheels()">
         {% for num in ["I", "II", "III", "IV", "V", "VI", "VII", "VIII"] %}
         <option value="{{num}}" {% if w[i] == num %} selected {% endif %}>{{num}}</option>
         {% endfor %}
@@ -68,4 +64,9 @@
     <br><br>
     <input type="submit">
 </form>
+
+{% endblock %}
+
+{% block script %}
+<script src="{{__host__}}/static/js/enigma.js">
 {% endblock %}
