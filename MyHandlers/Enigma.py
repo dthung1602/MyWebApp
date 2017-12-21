@@ -20,7 +20,7 @@ class EnigmaRequestHandler(Hl):
             super(EnigmaRequestHandler, self).render(*args,
                                                      w=[None, 'I', 'II', 'III', 'IV'],
                                                      p=[None, 'A', 'A', 'A', 'A'],
-                                                     rw='B', pb={c: c for c in uppercase}, **kwargs)
+                                                     rw='B', pb={}, **kwargs)
 
     def get(self):
         self.render("enigma.html")
@@ -134,7 +134,7 @@ class Enigma:
     def process_char(self, char):
         """encrypt/decrypt a single char"""
         # plug board
-        char = self.pb[char]
+        char = self.pb.get(char, char)
 
         # wheels
         A = ord('A')
@@ -149,7 +149,7 @@ class Enigma:
             char = chr(self.wheel[i].index(char) + A)
 
         # plug board
-        char = self.pb[char]
+        char = self.pb.get(char, char)
 
         self.rotate(0)
         return char
@@ -163,14 +163,8 @@ class Enigma:
     @staticmethod
     def create_plug_board(pb):
         """create a dictionary base on the given permutation of ABC...Z"""
-        pb = "".join(pb).upper()
-        if set(pb) != set(uppercase):
-            raise ValueError
-        plug_board = {}
-        a = list(uppercase)
-        for i in xrange(26):
-            plug_board[a[i]] = pb[i]
-        for c in pb:
-            if plug_board[plug_board[c]] != c:
+        plug_board = {uppercase[i]: pb[i] for i in xrange(26) if pb[i]}
+        for c in uppercase:
+            if c in plug_board and plug_board[plug_board[c]] != c:
                 raise ValueError
         return plug_board

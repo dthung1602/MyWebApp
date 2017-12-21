@@ -20,8 +20,10 @@
     <!--reflect wheel-->
     <label>Reflect wheel</label>
     <select name="rw">
-        <option value="B" {% if rw== "B" %} selected {% endif %}>B</option>
-        <option value="C" {% if rw== "C" %} selected {% endif %}>C</option>
+        <option value="B" {% if rw==
+        "B" %} selected {% endif %}>B</option>
+        <option value="C" {% if rw==
+        "C" %} selected {% endif %}>C</option>
     </select>
     <br>
 
@@ -44,8 +46,8 @@
             {% for c in "ABCDEFGHIJKLM" %}
             <td>
                 <label>{{c}}</label>
-                <input name="{{c}}" size="3" maxlength="1" value="{{pb[c]}}" type="text"
-                       onchange="checkPlugBoard(this)">
+                <input name="{{c}}" size="3" maxlength="1" value="{{pb.get(c, '')}}" type="text"
+                       onkeydown="saveOldValue(this)" onkeyup="updateValue(this)">
             </td>
             {% endfor %}
         </tr>
@@ -53,16 +55,19 @@
             {% for c in "NOPQRSTUVWXYZ" %}
             <td>
                 <label>{{c}}</label>
-                <input name="{{c}}" size="3" maxlength="1" value="{{pb[c]}}" type="text"
-                       onchange="checkPlugBoard(this)">
+                <input name="{{c}}" size="3" maxlength="1" value="{{pb.get(c, '')}}" type="text"
+                       onkeydown="saveOldValue(this)" onkeyup="updateValue(this)">
             </td>
             {% endfor %}
         </tr>
     </table>
 
     <label>Enter text:</label>
+    <br>
     <textarea name="text" rows=10 cols=120>{{text}}</textarea>
     <br><br>
+
+    <input type="reset">
     <input type="submit">
 </form>
 

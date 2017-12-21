@@ -29,9 +29,7 @@ class Handler(webapp2.RequestHandler):
 
     def render_str(self, template, **kwargs):
         t = jinja_env.get_template(template)
-        print(kwargs.get("__page_title__"))
         __page_title__ = kwargs.get("__page_title__", self.__getattribute__("page_title"))
-        print(">" + __page_title__ + "*")
         return t.render(kwargs, __page_title__=__page_title__, __host__=__host__)
 
     def render(self, template, **kwargs):
