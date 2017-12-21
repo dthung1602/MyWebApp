@@ -43,4 +43,4 @@ class Handler(webapp2.RequestHandler):
             500: "500 Internal Server Error"
         }
         self.request.status = code
-        Handler.render(self, "error.html", error=messages[code], __page_title__="Error")
+        Handler.render(self, "error.html", error=messages[code])

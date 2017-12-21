@@ -11,7 +11,7 @@
     <label>Wheel {{i}}</label>
     <select name="w{{i}}" onchange="checkWheels()">
         {% for num in ["I", "II", "III", "IV", "V", "VI", "VII", "VIII"] %}
-        <option value="{{num}}" {% if w[i] == num %} selected {% endif %}>{{num}}</option>
+        <option value="{{num}}" {% if w[i]== num %} selected {% endif %}>{{num}}</option>
         {% endfor %}
     </select>
     {% endfor %}
@@ -20,8 +20,8 @@
     <!--reflect wheel-->
     <label>Reflect wheel</label>
     <select name="rw">
-        <option value="B" {% if rw == "B" %} selected {% endif %}>B</option>
-        <option value="C" {% if rw == "C" %} selected {% endif %}>C</option>
+        <option value="B" {% if rw== "B" %} selected {% endif %}>B</option>
+        <option value="C" {% if rw== "C" %} selected {% endif %}>C</option>
     </select>
     <br>
 
@@ -30,7 +30,7 @@
     <label>Pos {{i}}</label>
     <select name="p{{i}}">
         {% for c in "ABCDEFGHIJKLMNOPQRSTUVWXYZ" %}
-        <option value="{{c}}" {% if p[i] == c %} selected {% endif %}>{{c}}</option>
+        <option value="{{c}}" {% if p[i]== c %} selected {% endif %}>{{c}}</option>
         {% endfor %}
     </select>
     {% endfor %}
@@ -39,13 +39,13 @@
     <!--plug board-->
     <label>Plug board:</label>
     <br>
-    <input type="hidden" value="ABCDEFGHIJKLMNOPQRSTUVWXYZ">
     <table>
         <tr>
             {% for c in "ABCDEFGHIJKLM" %}
             <td>
                 <label>{{c}}</label>
-                <input name="{{c}}" size="3" maxlength="1" value="{{pb[c]}}" type="text">
+                <input name="{{c}}" size="3" maxlength="1" value="{{pb[c]}}" type="text"
+                       onchange="checkPlugBoard(this)">
             </td>
             {% endfor %}
         </tr>
@@ -53,7 +53,8 @@
             {% for c in "NOPQRSTUVWXYZ" %}
             <td>
                 <label>{{c}}</label>
-                <input name="{{c}}" size="3" maxlength="1" value="{{pb[c]}}" type="text">
+                <input name="{{c}}" size="3" maxlength="1" value="{{pb[c]}}" type="text"
+                       onchange="checkPlugBoard(this)">
             </td>
             {% endfor %}
         </tr>
@@ -65,8 +66,6 @@
     <input type="submit">
 </form>
 
-{% endblock %}
+<script src="{{__host__}}/static/js/enigma.js"></script>
 
-{% block script %}
-<script src="{{__host__}}/static/js/enigma.js">
 {% endblock %}
