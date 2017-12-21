@@ -34,8 +34,8 @@ class EnigmaRequestHandler(Hl):
             self.render("enigma.html", __page_tittle__="Enigma Simulator", enigma=enigma, text=text)
         except (ValueError, KeyError, IndexError):
             self.render("enigma.html", __page_tittle__="Enigma Simulator", error="Invalid Enigma settings!")
-        except:
-            self.write("Unknown server error!")
+        # except:
+        #     self.write("Unknown server error!")
 
 
 wheels = {
@@ -69,34 +69,29 @@ reflector_wheels = {
 
 class Enigma:
     def __init__(self, w1, w2, w3, w4, p1, p2, p3, p4, rw, pb):
-        print("> ")
-        print(w1, w2, w3, w4, p1, p2, p3, p4, rw, pb)
-        self.wheel = [None] * 4
-        self.wheel[0] = copy(wheels[w1])
-        self.wheel[1] = copy(wheels[w2])
-        self.wheel[2] = copy(wheels[w3])
-        self.wheel[3] = copy(wheels[w4])
+        self.wheel = [
+            copy(wheels[w1]),
+            copy(wheels[w2]),
+            copy(wheels[w3]),
+            copy(wheels[w4]),
+        ]
+        s = set()
+        s.update([w1, w2, w3, w4])
+        if len(s) < 4:
+            raise ValueError
 
-        self.pos = [None] * 4
-        self.pos[0] = p1
-        self.pos[1] = p2
-        self.pos[2] = p3
-        self.pos[3] = p4
-        self.set_position()
-
-        self.rw = reflector_wheels[rw]
-        self.plug_board = self.create_plug_board(pb)
-
-    def set_position(self):
+        self.pos = [p1, p2, p3, p4]
         for i in xrange(4):
             p = self.wheel[i].index(self.pos[i])
             self.wheel[i] = self.wheel[i][p:] + self.wheel[i][:p]
 
+        self.rw = reflector_wheels[rw]
+        self.plug_board = self.create_plug_board(pb)
+
     def process_string(self, text):
-        text = [c for c in text.upper().replace(" ", "") if c.isalpha()]
         new_text = ""
-        for c in text:
-            new_text += self.process_char(c)
+        for char in [c for c in text.upper() if c.isalpha()]:
+            new_text += self.process_char(char)
             if len(new_text) % 5 == 4:
                 new_text += " "
         return new_text.strip()
