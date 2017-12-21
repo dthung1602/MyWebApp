@@ -15,7 +15,7 @@
     <label>Wheel {{i}}</label>
     <select name="w{{i}}">
         {% for num in ["I", "II", "III", "IV", "V", "VI", "VII", "VIII"] %}
-        <option value="{{num}}" {% if w and w[i] == num %} selected {% endif %}>{{num}}</option>
+        <option value="{{num}}" {% if w[i] == num %} selected {% endif %}>{{num}}</option>
         {% endfor %}
     </select>
     {% endfor %}
@@ -24,24 +24,44 @@
     <!--reflect wheel-->
     <label>Reflect wheel</label>
     <select name="rw">
-        <option value="B" {% if rw and rw == "B" %} selected {% endif %}>B</option>
-        <option value="C" {% if rw and rw == "C" %} selected {% endif %}>C</option>
+        <option value="B" {% if rw == "B" %} selected {% endif %}>B</option>
+        <option value="C" {% if rw == "C" %} selected {% endif %}>C</option>
     </select>
     <br>
 
     <!--positions-->
     {% for i in [1, 2, 3, 4] %}
-    <label>Poss {{i}}</label>
+    <label>Pos {{i}}</label>
     <select name="p{{i}}">
         {% for c in "ABCDEFGHIJKLMNOPQRSTUVWXYZ" %}
-        <option value="{{c}}" {% if p and p[i] == c %} selected {% endif %}>{{c}}</option>
+        <option value="{{c}}" {% if p[i] == c %} selected {% endif %}>{{c}}</option>
         {% endfor %}
     </select>
     {% endfor %}
     <br>
 
     <!--plug board-->
-    <input type="hidden" name="pb" value="ABCDEFGHIJKLMNOPQRSTUVWXYZ">
+    <label>Plug board:</label>
+    <br>
+    <input type="hidden" value="ABCDEFGHIJKLMNOPQRSTUVWXYZ">
+    <table>
+        <tr>
+            {% for c in "ABCDEFGHIJKLM" %}
+            <td>
+                <label>{{c}}</label>
+                <input name="{{c}}" size="3" maxlength="1" value="{{pb[c]}}" type="text">
+            </td>
+            {% endfor %}
+        </tr>
+        <tr>
+            {% for c in "NOPQRSTUVWXYZ" %}
+            <td>
+                <label>{{c}}</label>
+                <input name="{{c}}" size="3" maxlength="1" value="{{pb[c]}}" type="text">
+            </td>
+            {% endfor %}
+        </tr>
+    </table>
 
     <label>Enter text:</label>
     <textarea name="text" rows=10 cols=120>{{text}}</textarea>

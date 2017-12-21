@@ -5,6 +5,15 @@ from Handler import Handler as Hl
 
 
 class EnigmaRequestHandler(Hl):
+    def render(self, *args, **kwargs):
+        if "w" in kwargs:
+            super(EnigmaRequestHandler, self).render(*args, **kwargs)
+        else:
+            super(EnigmaRequestHandler, self).render(*args,
+                                                     w=[None, 'I', 'II', 'III', 'IV'],
+                                                     p=[None, 'A', 'A', 'A', 'A'],
+                                                     rw='B', pb={c: c for c in uppercase}, **kwargs)
+
     def get(self):
         self.render("enigma.html", __page_tittle__="Enigma Simulator")
 
@@ -20,11 +29,12 @@ class EnigmaRequestHandler(Hl):
         p4 = self.request.get("p4")
 
         rw = self.request.get("rw")
-        pb = self.request.get("pb")
+        pb = [self.request.get(c) for c in uppercase]
 
         attr_len = [len(pb), len(rw), len(w1), len(w2), len(w3), len(w4), len(p1), len(p2), len(p3), len(p4)]
         if 0 in attr_len and sum(attr_len) > 0:
-            self.render("enigma.html", __page_tittle__="Enigma Simulator", error="Missing Enigma settings!")
+            self.render("enigma.html", __page_tittle__="Enigma Simulator", error="Missing Enigma settings!",
+                        w=[None, 'I', 'II', 'III', 'IV'], p=[None, 'A', 'A', 'A', 'A'], rw='B', pb=uppercase)
             return
 
         try:
@@ -32,9 +42,10 @@ class EnigmaRequestHandler(Hl):
             text = enigma.process_string(self.request.get("text"))
             print(text)
             self.render("enigma.html", __page_tittle__="Enigma Simulator", text=text,
-                        w=[None, w1, w2, w3, w4], p=[None, p1, p2, p3, p4], rw=rw, pb=pb)
-        except (ValueError, KeyError, IndexError):
-            self.render("enigma.html", __page_tittle__="Enigma Simulator", error="Invalid Enigma settings!")
+                        w=[None, w1, w2, w3, w4], p=[None, p1, p2, p3, p4], rw=rw, pb=enigma.pb)
+        except (ValueError, KeyError, IndexError, TypeError):
+            self.render("enigma.html", __page_tittle__="Enigma Simulator", error="Invalid Enigma settings!",
+                        w=[None, 'I', 'II', 'III', 'IV'], p=[None, 'A', 'A', 'A', 'A'], rw='B', pb=uppercase)
         # except:
         #     self.write("Unknown server error!")
 
@@ -87,7 +98,7 @@ class Enigma:
             self.wheel[i] = self.wheel[i][p:] + self.wheel[i][:p]
 
         self.rw = reflector_wheels[rw]
-        self.plug_board = self.create_plug_board(pb)
+        self.pb = self.create_plug_board(pb)
 
     def process_string(self, text):
         new_text = ""
@@ -99,7 +110,7 @@ class Enigma:
 
     def process_char(self, char):
         # plug board
-        char = self.plug_board[char]
+        char = self.pb[char]
 
         # wheels
         A = ord('A')
@@ -114,7 +125,7 @@ class Enigma:
             char = chr(self.wheel[i].index(char) + A)
 
         # plug board
-        char = self.plug_board[char]
+        char = self.pb[char]
 
         self.rotate(0)
         return char
@@ -126,8 +137,10 @@ class Enigma:
 
     @staticmethod
     def create_plug_board(pb):
+        pb = "".join(pb).upper()
+        if set(pb) != set(uppercase):
+            raise ValueError
         plug_board = {}
-        pb = pb.upper()
         a = list(uppercase)
         for i in xrange(26):
             plug_board[a[i]] = pb[i]
