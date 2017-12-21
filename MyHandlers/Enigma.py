@@ -5,7 +5,13 @@ from Handler import Handler as Hl
 
 
 class EnigmaRequestHandler(Hl):
+    """Handle requests for enigma simulator"""
+
     def render(self, *args, **kwargs):
+        """
+            Override supper method
+            Add default settings for enigma simulator if no setting is provided
+        """
         if "w" in kwargs:
             super(EnigmaRequestHandler, self).render(*args, **kwargs)
         else:
@@ -18,6 +24,7 @@ class EnigmaRequestHandler(Hl):
         self.render("enigma.html", __page_tittle__="Enigma Simulator")
 
     def post(self):
+        # get data
         w1 = self.request.get("w1")
         w2 = self.request.get("w2")
         w3 = self.request.get("w3")
@@ -31,24 +38,27 @@ class EnigmaRequestHandler(Hl):
         rw = self.request.get("rw")
         pb = [self.request.get(c) for c in uppercase]
 
+        # check if data is incomplete
         attr_len = [len(pb), len(rw), len(w1), len(w2), len(w3), len(w4), len(p1), len(p2), len(p3), len(p4)]
         if 0 in attr_len and sum(attr_len) > 0:
-            self.render("enigma.html", __page_tittle__="Enigma Simulator", error="Missing Enigma settings!",
-                        w=[None, 'I', 'II', 'III', 'IV'], p=[None, 'A', 'A', 'A', 'A'], rw='B', pb=uppercase)
+            self.render("enigma.html", __page_tittle__="Enigma Simulator", error="Missing Enigma settings!")
             return
 
+        # process string and render html
         try:
             enigma = Enigma(w1, w2, w3, w4, p1, p2, p3, p4, rw, pb)
             text = enigma.process_string(self.request.get("text"))
-            print(text)
             self.render("enigma.html", __page_tittle__="Enigma Simulator", text=text,
                         w=[None, w1, w2, w3, w4], p=[None, p1, p2, p3, p4], rw=rw, pb=enigma.pb)
         except (ValueError, KeyError, IndexError, TypeError):
-            self.render("enigma.html", __page_tittle__="Enigma Simulator", error="Invalid Enigma settings!",
-                        w=[None, 'I', 'II', 'III', 'IV'], p=[None, 'A', 'A', 'A', 'A'], rw='B', pb=uppercase)
-        # except:
-        #     self.write("Unknown server error!")
+            self.render("enigma.html", __page_tittle__="Enigma Simulator", error="Invalid Enigma settings!")
+        except:
+            self.error(500)
 
+
+###################################################
+#                 Enigma engine                   #
+###################################################
 
 wheels = {
     'I': ['Q', 'T', 'P', 'G', 'S', 'K', 'M', 'Y', 'N', 'U', 'O', 'H', 'I',
@@ -81,6 +91,14 @@ reflector_wheels = {
 
 class Enigma:
     def __init__(self, w1, w2, w3, w4, p1, p2, p3, p4, rw, pb):
+        """
+            @:param w[i]: wheel settings, range: I, II, ... VIII
+            @:param p[i]: first letter settings, range: ABC...Z
+            @:param rw: reflect wheel, range BC
+            @:param pb: plug board setting, range: permutation of ABC...Z
+        """
+
+        # wheels
         self.wheel = [
             copy(wheels[w1]),
             copy(wheels[w2]),
@@ -89,18 +107,21 @@ class Enigma:
         ]
         s = set()
         s.update([w1, w2, w3, w4])
-        if len(s) < 4:
+        if len(s) < 4:  # all wheels must be different
             raise ValueError
 
+        # init letters
         self.pos = [p1, p2, p3, p4]
         for i in xrange(4):
             p = self.wheel[i].index(self.pos[i])
             self.wheel[i] = self.wheel[i][p:] + self.wheel[i][:p]
 
+        # reflect wheel and plug board
         self.rw = reflector_wheels[rw]
         self.pb = self.create_plug_board(pb)
 
     def process_string(self, text):
+        """encrypt/decrypt a string"""
         new_text = ""
         for char in [c for c in text.upper() if c.isalpha()]:
             new_text += self.process_char(char)
@@ -109,6 +130,7 @@ class Enigma:
         return new_text.strip()
 
     def process_char(self, char):
+        """encrypt/decrypt a single char"""
         # plug board
         char = self.pb[char]
 
@@ -131,12 +153,14 @@ class Enigma:
         return char
 
     def rotate(self, w):
+        """change state of enigma machine"""
         self.wheel[w] = self.wheel[w][1:] + self.wheel[w][0:1]
         if self.wheel[w][0] == 'A' and w < 3:
             self.rotate(w + 1)
 
     @staticmethod
     def create_plug_board(pb):
+        """create a dictionary base on the given permutation of ABC...Z"""
         pb = "".join(pb).upper()
         if set(pb) != set(uppercase):
             raise ValueError

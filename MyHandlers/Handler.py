@@ -10,6 +10,8 @@ jinja_env = jinja2.Environment(loader=jinja2.FileSystemLoader(template_dir),
                                autoescape=True)
 
 __host__ = "http://localhost:8080"
+
+
 # __host__ = "https://webapp-173414.appspot.com"
 # __host__ = "http://  [insert ip address here]  :8080"
 
@@ -30,3 +32,11 @@ class Handler(webapp2.RequestHandler):
 
     def render(self, template, **kwargs):
         self.write(self.render_str(template, **kwargs))
+
+    def error(self, code):
+        messages = {
+            404: "404 Not Found",
+            500: "500 Internal Server Error"
+        }
+        self.request.status = code
+        Handler.render(self, "error.html", error=messages[code], __page_title__="Error")
