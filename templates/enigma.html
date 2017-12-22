@@ -4,7 +4,7 @@
 
 <div class="jumbotron">
     <h1 style="padding-bottom: 10px; padding-left: 50px">Enigma Simulator</h1>
-    <div class="badge" style="margin-left:50px;background-color:green">Version 0.9</div>
+    <div class="badge" style="margin-left:50px;background-color:green">Version 1.0</div>
 </div>
 
 <div class="container" align="center">
@@ -22,9 +22,9 @@
         <table>
             <!--------------  reflect wheel  ------------------>
             <tr>
-                <td style="text-align: right;padding-right: 20px"><strong>Umkehrwalze</strong></td>
+                <td style="text-align: right;padding-right: 20px" title="Reflector wheel"><strong>Umkehrwalze</strong></td>
                 <td>
-                    <select name="rw" style="width:115px;margin:5px;text-align: center">
+                    <select name="rw" style="width:115px;margin:5px;text-align:center">
                         <option value="B" {% if rw == "B" %} selected {% endif %}>--- B ---</option>
                         <option value="C" {% if rw == "C" %} selected {% endif %}>--- C ---</option>
                     </select>
@@ -33,7 +33,7 @@
 
             <!------------- wheels ---------------->
             <tr>
-                <td style="text-align: right;padding-right: 20px"><strong>Grundstellung</strong></td>
+                <td style="text-align: right;padding-right: 20px" title="Reflector wheel"><strong>Walzenlage</strong></td>
                 <td>
                     {% for i in [1, 2, 3, 4] %}
                     <select name="w{{i}}" style="width:50px;margin:5px" onchange="checkWheels()">
@@ -47,7 +47,7 @@
 
             <!-------- positions ---------------->
             <tr>
-                <td style="text-align: right;padding-right: 20px"><strong>Ringstellung</strong></td>
+                <td style="text-align: right;padding-right: 20px" title="Initial wheels settings"><strong>Ringstellung</strong></td>
                 <td>
                     {% for i in [1, 2, 3, 4] %}
                     <select name="p{{i}}" style="width:50px;margin:5px">
@@ -65,7 +65,7 @@
         <div style="border: 1px black solid;margin-top: 25px; width: 650px">
             <table style="margin: 15px;">
                 <tr>
-                    <th colspan="13" style="text-align: center">Steckerbrett</th>
+                    <th colspan="13" style="text-align: center" title="PLug board">Steckerbrett</th>
                 </tr>
                 <tr>
                     {% for c in "ABCDEFGHIJKLM" %}
@@ -91,21 +91,21 @@
 
         <!---------------------------------Enter text ----------------------------->
         <div style="text-align: center; margin-top: 50px">
-            <label>Text/Geheimtext</label>
+            <label title="Plain text / Cipher text">Text/Geheimtext</label>
             <br><br>
             <textarea name="text" rows=10 cols=78>{{text}}</textarea>
         </div>
 
         <!---------------------------- reset -------------------------------->
         <div style="text-align: center; margin-top: 50px; margin-bottom: 30px">
-            <label style="padding-right: 25px">Nach dem Verschlüsseln/Entschlüsseln:</label>
+            <label style="padding-right: 25px" title="After encryption/decryption">Nach dem Verschlüsseln/Entschlüsseln:</label>
             <input type="radio" name="reset" value="true" {% if rs %} checked {% endif %}>
-            <span style="padding-left: 5px; padding-right: 25px">Zurücksetzen</span>
+            <span style="padding-left: 5px; padding-right: 25px" title="Reset">Zurücksetzen</span>
             <input type="radio" name="reset" value="false" {% if not rs %} checked {% endif %}>
-            <span style="padding-left: 5px; padding-right: 25px">Fortsetzen</span>
+            <span style="padding-left: 5px; padding-right: 25px" title="Keep">Fortsetzen</span>
         </div>
 
-        <input type="submit" value="OK">
+        <input type="submit" name="action" value="EINREICHEN" class="btn btn-success" style="text-align:center;font-size:120%;width:200px">
     </form>
 
     <script src="{{__host__}}/static/js/enigma.js"></script>

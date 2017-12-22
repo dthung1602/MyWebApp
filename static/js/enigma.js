@@ -5,13 +5,15 @@ function getByName(name) {
 function checkWheels() {
     var i, j;
     var wheels = [];
-    for (i = 1; i < 5; i++)
-        wheels.push(getByName("w" + i).value)
-    for (i = 0; i < 4; i++)
-        for (j = i + 1; j < 5; j++)
-            if (wheels[i] === wheels[j]) {
-                alert("Wheels must have different values!");
-                return
+    for (i = 1; i < 5; i++) {
+        wheels.push(getByName("w" + i));
+        wheels[wheels.length - 1].style.color = "black";
+    }
+    for (i = 0; i < 3; i++)
+        for (j = i + 1; j < 4; j++)
+            if (wheels[i].value === wheels[j].value) {
+                wheels[i].style.color = "red";
+                wheels[j].style.color = "red";
             }
 }
 
