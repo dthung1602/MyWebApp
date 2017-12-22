@@ -2,8 +2,6 @@ import Handler
 
 
 class ErrorHandler(Handler.Handler):
-    page_title = "Error"
-
     def get(self, *args, **kwargs):
         self.error(404)
 
