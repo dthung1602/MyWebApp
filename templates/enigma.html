@@ -4,96 +4,105 @@
 
 <div class="jumbotron">
     <h1 style="padding-bottom: 10px; padding-left: 50px">Enigma Simulator</h1>
-    <div class="badge" style="margin-left:50px;background-color:green">Version 1.0</div>
+    <div class="badge" style="margin-left:50px;background-color:green">Version 1.1</div>
 </div>
 
 <div class="container" align="center">
     <!------ Error ------->
     {% if error %}
-    <div class="alert alert-danger">
+    <br><br>
+
+    <div class="alert alert-danger" style="width: 700px; text-align: left">
         <img src="/static/image/error.png" height="55px">
         <strong style="font-size:150%;margin-left: 20px">ERROR!</strong>
         <span style="font-size:150%;margin-left: 30px">{{error}}</span>
     </div>
-    <br><br>
     {% endif %}
 
     <form method="post">
-        <table>
-            <!--------------  reflect wheel  ------------------>
-            <tr>
-                <td style="text-align: right;padding-right: 20px" title="Reflector wheel"><strong>Umkehrwalze</strong></td>
-                <td>
-                    <select name="rw" style="width:115px;margin:5px;text-align:center">
-                        <option value="B" {% if rw == "B" %} selected {% endif %}>--- B ---</option>
-                        <option value="C" {% if rw == "C" %} selected {% endif %}>--- C ---</option>
-                    </select>
-                </td>
-            </tr>
-
-            <!------------- wheels ---------------->
-            <tr>
-                <td style="text-align: right;padding-right: 20px" title="Reflector wheel"><strong>Walzenlage</strong></td>
-                <td>
-                    {% for i in [1, 2, 3, 4] %}
-                    <select name="w{{i}}" style="width:50px;margin:5px" onchange="checkWheels()">
-                        {% for num in ["I", "II", "III", "IV", "V", "VI", "VII", "VIII"] %}
-                        <option value="{{num}}" {% if w[i]== num %} selected {% endif %}>{{num}}</option>
-                        {% endfor %}
-                    </select>
-                    {% endfor %}
-                </td>
-            </tr>
-
-            <!-------- positions ---------------->
-            <tr>
-                <td style="text-align: right;padding-right: 20px" title="Initial wheels settings"><strong>Ringstellung</strong></td>
-                <td>
-                    {% for i in [1, 2, 3, 4] %}
-                    <select name="p{{i}}" style="width:50px;margin:5px">
-                        {% for c in "ABCDEFGHIJKLMNOPQRSTUVWXYZ" %}
-                        <option value="{{c}}" {% if p[i] == c %} selected {% endif %}>{{c}}</option>
-                        {% endfor %}
-                    </select>
-                    {% endfor %}
-                </td>
-            </tr>
-        </table>
-
-
-        <!---------------------plug board---------------------------->
-        <div style="border: 1px black solid;margin-top: 25px; width: 650px">
-            <table style="margin: 15px;">
+        <div class="panel panel-primary" style="margin-top: 50px;width: 700px">
+            <div class="panel-heading" title="Settings"><h4><strong>EINSTELLUNGEN</strong></h4></div>
+            <table style="margin-top: 25px">
+                <!--------------  reflect wheel  ------------------>
                 <tr>
-                    <th colspan="13" style="text-align: center" title="PLug board">Steckerbrett</th>
-                </tr>
-                <tr>
-                    {% for c in "ABCDEFGHIJKLM" %}
-                    <td style="text-align: center" width="50px" height="75px">
-                        <div><strong>{{c}}</strong></div>
-                        <input name="{{c}}" size="1" maxlength="1" value="{{pb.get(c, '')}}" type="text"
-                               style="text-align: center" onkeydown="saveOldValue(this)" onkeyup="updateValue(this)">
+                    <td style="text-align: right;padding-right: 20px" title="Reflector wheel"><strong>Umkehrwalze</strong></td>
+                    <td>
+                        <select name="rw" style="width:155px;margin:5px;text-align:center">
+                            <option value="B" {% if rw == "B" %} selected {% endif %}>--- B ---</option>
+                            <option value="C" {% if rw == "C" %} selected {% endif %}>--- C ---</option>
+                        </select>
                     </td>
-                    {% endfor %}
                 </tr>
+
+                <!------------- wheels ---------------->
                 <tr>
-                    {% for c in "NOPQRSTUVWXYZ" %}
-                    <td style="text-align: center" width="50px" height="75px">
-                        <div><strong>{{c}}</strong></div>
-                        <input name="{{c}}" size="1" maxlength="1" value="{{pb.get(c, '')}}" type="text"
-                               style="text-align: center" onkeydown="saveOldValue(this)" onkeyup="updateValue(this)">
+                    <td style="text-align: right;padding-right: 20px" title="Reflector wheel"><strong>Walzenlage</strong></td>
+                    <td>
+                        {% for i in [1, 2, 3, 4] %}
+                        <select name="w{{i}}" style="width:70px;margin:5px" onchange="checkWheels()">
+                            {% for num in ["I", "II", "III", "IV", "V", "VI", "VII", "VIII"] %}
+                            <option value="{{num}}" {% if w[i]== num %} selected {% endif %}>{{num}}</option>
+                            {% endfor %}
+                        </select>
+                        {% endfor %}
                     </td>
-                    {% endfor %}
+                </tr>
+
+                <!-------- positions ---------------->
+                <tr>
+                    <td style="text-align: right;padding-right: 20px" title="Initial wheels settings"><strong>Ringstellung</strong></td>
+                    <td>
+                        {% for i in [1, 2, 3, 4] %}
+                        <select name="p{{i}}" style="width:70px;margin:5px">
+                            {% for c in "ABCDEFGHIJKLMNOPQRSTUVWXYZ" %}
+                            <option value="{{c}}" {% if p[i] == c %} selected {% endif %}>{{c}}</option>
+                            {% endfor %}
+                        </select>
+                        {% endfor %}
+                    </td>
                 </tr>
             </table>
+
+
+            <!---------------------plug board---------------------------->
+            <div style="margin-top: 25px; width: 650px">
+                <table style="margin: 15px;">
+                    <tr>
+                        <th colspan="13" style="text-align: center" title="PLug board">Steckerbrett</th>
+                    </tr>
+                    <tr>
+                        {% for c in "ABCDEFGHIJKLM" %}
+                        <td style="text-align: center" width="50px" height="75px">
+                            <div><strong>{{c}}</strong></div>
+                            <input name="{{c}}" size="1" maxlength="1" value="{{pb.get(c, '')}}" type="text"
+                                   style="text-align: center" onkeydown="saveOldValue(this)" onkeyup="updateValue(this)">
+                        </td>
+                        {% endfor %}
+                    </tr>
+                    <tr>
+                        {% for c in "NOPQRSTUVWXYZ" %}
+                        <td style="text-align: center" width="50px" height="75px">
+                            <div><strong>{{c}}</strong></div>
+                            <input name="{{c}}" size="1" maxlength="1" value="{{pb.get(c, '')}}" type="text"
+                                   style="text-align: center" onkeydown="saveOldValue(this)" onkeyup="updateValue(this)">
+                        </td>
+                        {% endfor %}
+                    </tr>
+                </table>
+            </div>
+
+            <!------------------------ Random --------------------->
+            <br><br>
+            <input type="button" onclick="randomizeSetting()" value="RANDOMISIEREN" class="btn btn-warning" style="text-align:center;width:200px;margin-bottom:25px" title="Randomize">
+
         </div>
 
 
         <!---------------------------------Enter text ----------------------------->
-        <div style="text-align: center; margin-top: 50px">
-            <label title="Plain text / Cipher text">Text/Geheimtext</label>
-            <br><br>
-            <textarea name="text" rows=10 cols=78>{{text}}</textarea>
+        <!--<div class="panel panel-primary" style="text-align: center; margin-top: 50px">-->
+        <div class="panel panel-primary" style="margin-top: 50px;width: 700px">
+            <div class="panel-heading" title="Plain text / Cipher text"><h4><strong>KLARTEXT / GEHEIMTEXT</strong></h4></div>
+            <textarea style="border: none; margin: 20px; font-family: 'Courier New', Courier, monospace;font-size: large" name="text" cols="50" rows="8" placeholder="Hier Text eingeben">{{text}}</textarea>
         </div>
 
         <!---------------------------- reset -------------------------------->
@@ -105,7 +114,7 @@
             <span style="padding-left: 5px; padding-right: 25px" title="Keep">Fortsetzen</span>
         </div>
 
-        <input type="submit" name="action" value="EINREICHEN" class="btn btn-success" style="text-align:center;font-size:120%;width:200px">
+        <input type="submit" value="EINREICHEN" class="btn btn-success" style="text-align:center;font-size:120%;width:200px" title="Submit">
     </form>
 
     <script src="{{__host__}}/static/js/enigma.js"></script>
