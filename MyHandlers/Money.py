@@ -11,7 +11,7 @@ from Handler import Handler as Hl
 
 
 #############################################################
-#                Request Handler classes                    #
+#                    Utility functions                      #
 #############################################################
 
 def round_up10(n):
@@ -32,14 +32,16 @@ Handler.jinja_env.globals['round_float'] = round_float
 class Home(Hl):
     """Handle home page"""
 
+    page_title = "Monthly money calculation"
+
     def get(self):
         """Render home page"""
         query = db.GqlQuery("SELECT * FROM Month ORDER BY time_begin DESC")
         months = [m for m in query]
         if len(months) == 0:
-            self.render("money_home.html", __page_title__="Monthly money calculation")
+            self.render("money_home.html")
         else:
-            self.render("money_home.html", months=months, __page_title__="Monthly money calculation")
+            self.render("money_home.html", months=months)
 
     def post(self):
         """Create first new month"""
@@ -48,7 +50,7 @@ class Home(Hl):
         months = [m for m in query]
         if len(months) != 0:
             self.render("money_home.html", error=["New month is created automatically when user ends current month."],
-                        __page_title__="Monthly money calculation", months=months)
+                        months=months)
             return
 
         # new month
@@ -63,7 +65,7 @@ class Monthly(Hl):
         """Get month info and render html"""
         month = Month.get_by_id(int(month_id))
         if month is None:
-            self.redirect("/moneyM1522/home")
+            self.error(404)
         else:
             self.render_current_month(month)
 
@@ -71,7 +73,7 @@ class Monthly(Hl):
         """Handle 2 actions: add new Good & end current month"""
         month = Month.get_by_id(int(month_id))
         if month is None:  # invalid month id
-            self.redirect("/moneyM1522/home")
+            self.error(404)
         else:
             if self.request.get("action") == "Add":
                 self.add_good(month)
@@ -171,9 +173,17 @@ class Monthly(Hl):
 class Buyer(db.Model):
     name = db.StringProperty(required=True)
 
+    __number_of_buyers__ = None
+
     @staticmethod
     def get_all_buyers():
         return db.GqlQuery("SELECT * FROM Buyer ORDER BY name ASC")
+
+    @classmethod
+    def get_number_of_buyers(cls):
+        if not cls.__number_of_buyers__:
+            cls.__number_of_buyers__ = cls.all(keys_only=True).count()
+        return cls.__number_of_buyers__
 
     def get_money_in_month(self, month):
         goods = db.GqlQuery(
@@ -234,11 +244,9 @@ class Month(db.Model):
         return month
 
     def update(self):
-        buyers = list(Buyer.get_all_buyers())
+        nob = Buyer.get_number_of_buyers()
         self.spend = self.sum()
-        self.total_money = self.spend - self.last_month_left
-        self.average = (self.total_money * 1.0 / len(buyers)) if len(buyers) > 0 else 0.0
-        self.next_month_left = int(sum([usage.next_month_left for usage in MoneyUsage.get_usage_in_month(self)]))
+        self.average = (self.spend * 1.0 / nob) if nob > 0 else 0.0
         self.put()
         time.sleep(0.5)
 
@@ -288,9 +296,9 @@ class MoneyUsage(db.Model):
 
     @staticmethod
     def update(good):
-        price = good.price * 1.0 / len(list(Buyer.get_all_buyers()))
+        avg_price = good.price * 1.0 / Buyer.get_number_of_buyers()
         for usage in db.GqlQuery("SELECT * FROM MoneyUsage WHERE month_id={}".format(good.month_id)):
-            usage.money_to_pay += price
+            usage.money_to_pay += avg_price
             if usage.buyer_id == good.buyer:
                 usage.money_spend += good.price
                 usage.money_to_pay -= good.price
