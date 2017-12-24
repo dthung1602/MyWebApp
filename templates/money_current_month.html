@@ -8,7 +8,8 @@
     {% if month.time_end %}
     <p style="padding-left:70px"><i>End date : {{month.time_end.strftime("%d/%m/%y")}}</i></p>
     {% endif %}
-    <p style="text-align:right;padding-right:30px;font-size:100%;margin-bottom:0"><i>version 2.0</i></p>
+    <div style="text-align:right;padding-right:40px"><p class="badge" style="background-color:green;font-size:110%">
+        Version 2.1</p></div>
 </div>
 
 <div class="container">
@@ -87,63 +88,31 @@
                 <td><input name="what" required class="form-control" placeholder="Enter what have been bought"></td>
                 <td style="width:25%">
                     <input name="price" title="Arithmetic expression with + - * / ()" pattern="^[0-9 \+\-\*\/\(\)]+$"
-                           required class="form-control" placeholder="Enter price">
+                           required class="form-control" placeholder="Arithmetic expression with + - * / ()">
                 </td>
             </tr>
             {% endif %}
             </tfoot>
         </table>
     </form>
-    <br><br>
-
-    {% if not month.time_end %}
-    <!--------------------------------guidance for price------------------------------------>
-    <div class="alert alert-info" style="font-size:120%">
-        <strong>Note</strong>
-        <ul>
-            <li>Price field can act as a calculator</li>
-            <li>Currently supported operations: () + - * /</li>
-        </ul>
-    </div>
-    <br><br>
-
-    <!--------------------------------end month------------------------------------>
-    <form method="post" class="alert alert-danger" style="padding:30px 20px;font-size:120%"
-          onsubmit="return confirm('Do you really want to end this month?');">
-        <input type="submit" name="action" value="END MONTH" class="btn btn-danger" style="align:right">
-        <strong style="font-size:120%">&nbsp; &nbsp;&nbsp;&nbsp; &nbsp; Warning!</strong>
-        <span style="font-size:120%">No data can be added to this month after ending</span>
-    </form>
-    <br><br><br><br>
-    {% endif %}
-
-    <!-----------------------------summarize------------------------------>
-    <div class="panel panel-primary">
-        <div class="panel-heading"><h4><strong>Summarize</strong></h4></div>
-        <table class="table table-striped table-bordered table-hover">
-            <tr>
-                <td>Total spend in month</td>
-                <td>{{month.spend}}</td>
-            </tr>
-            <tr>
-                <td>Last month left</td>
-                <td>{{month.last_month_left}}</td>
-            </tr>
-            <tr>
-                <td>Money to pay</td>
-                <td>{{month.total_money}}</td>
-            </tr>
-            <tr>
-                <td>Average</td>
-                <td>{{round_float(month.average)}}</td>
-            </tr>
-            <tr>
-                <td>Money left for next month</td>
-                <td>{{month.next_month_left}}</td>
-            </tr>
-        </table>
-    </div>
     <br><br><br>
+
+
+    <!--------------------------------- summarize ------------------------------------>
+    <table class="table" style="font-size:275%;color: #9c9c9c; margin-bottom: 0">
+        <tr>
+            <td width="40%" onmouseenter="this.style.background='#f3f3f3'" onmouseleave="this.style.background='white'">
+                <span style="margin-right: 40px; font-size: 115%">&nbsp;&nbsp;TOTAL</span>
+                <span>{{format_number(month.spend * 1000)}}</span>
+            </td>
+            <td onmouseenter="this.style.background='#f3f3f3'" onmouseleave="this.style.background='white'">
+                <span style="margin-right: 40px; font-size: 115%">&nbsp;&nbsp;AVERAGE</span>
+                <span>{{format_number(month.average * 1000)}}</span>
+            </td>
+        </tr>
+    </table>
+    <hr style="margin-top: 0; color: #DDDDDD; border-width: 3px" >
+    <br><br><br><br>
 
     <!-----------------------------payments------------------------------>
     <div class="panel panel-primary">
@@ -174,7 +143,9 @@
             </tbody>
         </table>
     </div>
+    <br><br>
 
+    <!-------------------------------- note ----------------------------------------->
     <div class="alert alert-info" style="font-size:120%">
         <strong>Note (*)</strong>
         <ul>
@@ -182,6 +153,17 @@
             <li>Negative value means get paid back</li>
         </ul>
     </div>
+
+    <!--------------------------------end month------------------------------------>
+    {% if not month.time_end %}
+    <form method="post" class="alert alert-danger" style="padding:30px 20px;font-size: 120%;text-align: left"
+          onsubmit="return confirm('Do you really want to end this month?');">
+        <input type="submit" name="action" value="END MONTH" class="btn btn-danger" style="text-align:right">
+        <strong style="font-size:120%; padding-left: 50px; padding-right: 5px">Warning!</strong>
+        <span style="font-size:120%">No data can be added to this month after ending</span>
+    </form>
+    <br><br><br><br>
+    {% endif %}
 
     <!-----------------------links----------------------------->
     <div style="padding:40px; text-align:center">

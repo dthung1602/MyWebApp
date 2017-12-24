@@ -40,7 +40,7 @@ def upgrade():
                 money_usage.put()
 
             month.put()
-            time.sleep(1.5)
+            sleep(1.5)
         print("UPDATED!")
     except Exception:
         print("ERROR!")

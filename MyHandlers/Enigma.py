@@ -1,3 +1,5 @@
+# -*- coding: UTF-8 -*-
+
 from copy import copy
 from string import uppercase
 
@@ -45,7 +47,7 @@ class EnigmaRequestHandler(Hl):
         # check if data is incomplete
         attr_len = [len(pb), len(rw), len(w1), len(w2), len(w3), len(w4), len(p1), len(p2), len(p3), len(p4), len(rs)]
         if 0 in attr_len and sum(attr_len) > 0:
-            self.render("enigma.html", error="Missing Enigma settings!")
+            self.render("enigma.html", error="Fehlende Einstellung!")
             return
 
         # process string and render html
@@ -56,7 +58,7 @@ class EnigmaRequestHandler(Hl):
             self.render("enigma.html", text=text,
                         w=[None, w1, w2, w3, w4], p=enigma.pos_state, rw=rw, pb=enigma.pb, rs=enigma.rs)
         except (ValueError, KeyError, IndexError, TypeError):
-            self.render("enigma.html", error="Invalid Enigma settings!")
+            self.render("enigma.html", error="Ungültige Einstellung!")
         except:
             self.error(500)
 

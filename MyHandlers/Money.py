@@ -22,7 +22,18 @@ def round_float(f):
     return "{0:.2f}".format(f)
 
 
+def format_number(n):
+    print(n)
+    if isinstance(n, float):
+        print("int")
+        return "{0:,.2f}".format(n).replace(',', ' ')
+    else:
+        print("float")
+        return "{:,}".format(n).replace(',', ' ')
+
+
 Handler.jinja_env.globals['round_float'] = round_float
+Handler.jinja_env.globals['format_number'] = format_number
 
 
 #############################################################
@@ -193,11 +204,7 @@ class Buyer(db.Model):
 
 
 class Month(db.Model):
-    last_month_left = db.IntegerProperty(required=True)
-    next_month_left = db.IntegerProperty()
-
     spend = db.IntegerProperty()
-    total_money = db.IntegerProperty()
     average = db.FloatProperty()
 
     time_begin = db.DateTimeProperty(auto_now_add=True)
@@ -209,16 +216,13 @@ class Month(db.Model):
     @staticmethod
     def new_month(old_month=None):
         # create new month
-        month = Month(last_month_left=0, spend=0, total_money=0, average=0.0, next_month_left=0)
+        month = Month(spend=0, average=0.0)
         buyers = list(Buyer.get_all_buyers())
 
         # link new month to old month
         old_month_money_usages = {}
         if old_month is not None:
             month.prev_month = old_month.key().id()
-            month.last_month_left = month.next_month_left = old_month.next_month_left
-            month.total_money = -month.last_month_left
-            month.average = (-month.last_month_left * 1.0 / len(buyers)) if len(buyers) > 0 else 0.0
             usages = MoneyUsage.get_usage_in_month(old_month)
             old_month_money_usages = {usage.buyer_id: usage.next_month_left for usage in usages}
 
