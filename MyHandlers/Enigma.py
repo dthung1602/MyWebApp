@@ -22,7 +22,7 @@ class EnigmaRequestHandler(Hl):
             super(EnigmaRequestHandler, self).render(*args,
                                                      w=[None, 'I', 'II', 'III', 'IV'],
                                                      p=[None, 'A', 'A', 'A', 'A'],
-                                                     rw='B', pb={}, rs=False, **kwargs)
+                                                     rw='B', pb={}, rs=True, **kwargs)
 
     def get(self):
         self.render("enigma.html")

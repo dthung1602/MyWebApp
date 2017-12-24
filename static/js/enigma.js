@@ -82,3 +82,12 @@ function randomizeSetting() {
         getByName(v).value = u;
     }
 }
+
+function copyText() {
+    getByName("text").select();
+    document.execCommand("Copy");
+}
+
+function clearText() {
+    getByName("text").value = ""
+}

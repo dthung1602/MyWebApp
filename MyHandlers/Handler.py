@@ -9,10 +9,10 @@ template_dir = os.path.join(os.path.dirname(__file__), "../templates")
 jinja_env = jinja2.Environment(loader=jinja2.FileSystemLoader(template_dir),
                                autoescape=True)
 
-# __host__ = "http://localhost:8080"
+__host__ = "http://localhost:8080"
 
 
-__host__ = "https://webapp-173414.appspot.com"
+# __host__ = "https://webapp-173414.appspot.com"
 # __host__ = "http://  [insert ip address here]  :8080"
 
 

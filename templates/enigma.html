@@ -103,6 +103,10 @@
         <div class="panel panel-primary" style="margin-top: 50px;width: 700px">
             <div class="panel-heading" title="Plain text / Cipher text"><h4><strong>KLARTEXT / GEHEIMTEXT</strong></h4></div>
             <textarea style="border: none; margin: 20px; font-family: 'Courier New', Courier, monospace;font-size: large" name="text" cols="50" rows="8" placeholder="Hier Text eingeben">{{text}}</textarea>
+            <div style="margin: 20px; text-align: right">
+                <input type="button" onclick="clearText()" class="btn btn-info" value="Alles löschen" title="Clear all">
+                <input type="button" onclick="copyText()" class="btn btn-info" value="Kopieren" title="Copy">
+            </div>
         </div>
 
         <!---------------------------- reset -------------------------------->
