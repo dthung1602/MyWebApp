@@ -1,8 +1,8 @@
-import math
 import re
-import time
 from datetime import datetime
 from datetime import timedelta
+from math import ceil
+from time import sleep
 
 from google.appengine.ext import db
 
@@ -15,7 +15,7 @@ from Handler import Handler as Hl
 #############################################################
 
 def round_up10(n):
-    return int(math.ceil(n / 10.0) * 10)
+    return int(ceil(n / 10.0) * 10)
 
 
 def round_float(f):
@@ -139,7 +139,7 @@ class Monthly(Hl):
         # put to database
         good = Good(month_id=month_id, price=price, what=what, buyer=buyer)
         good.put()
-        time.sleep(0.5)
+        sleep(0.5)
         MoneyUsage.update(good)
         month.update()
         self.render_current_month(month)
@@ -162,7 +162,7 @@ class Monthly(Hl):
         old_month.next_month = new_month.key().id()
         old_month.put()
 
-        time.sleep(0.8)
+        sleep(0.8)
         self.render_current_month(old_month)
 
 
@@ -223,7 +223,7 @@ class Month(db.Model):
             old_month_money_usages = {usage.buyer_id: usage.next_month_left for usage in usages}
 
         month.put()
-        time.sleep(0.3)
+        sleep(0.3)
 
         # create corresponding money usage for each user in this month
         for buyer in buyers:
@@ -240,7 +240,7 @@ class Month(db.Model):
             )
             money_usage.put()
 
-        time.sleep(1)
+        sleep(1)
         return month
 
     def update(self):
@@ -248,7 +248,7 @@ class Month(db.Model):
         self.spend = self.sum()
         self.average = (self.spend * 1.0 / nob) if nob > 0 else 0.0
         self.put()
-        time.sleep(0.5)
+        sleep(0.5)
 
     def to_string_short(self):
         new_time = self.time_begin + timedelta(days=4)
@@ -305,4 +305,4 @@ class MoneyUsage(db.Model):
             usage.roundup = round_up10(usage.money_to_pay)
             usage.next_month_left = usage.roundup - usage.money_to_pay
             usage.put()
-        time.sleep(0.8)
+        sleep(0.8)
