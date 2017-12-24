@@ -1,26 +1,31 @@
 import webapp2
+
 from MyHandlers import *
 
 Handler.handlers = [
-    ('/', MainPage.MainPage, None),
-    ('/test', Test.Test, "Test cookie"),
+    ('/', MainPage.MainPage),
+    ('/test', Test.Test),
 
-    ('/rot13', Rot13.Rot13, "Rot 13"),
+    ('/rot13', Rot13.Rot13),
 
-    ('/signup', Signup.SignUp, "Sign up"),
-    ('/signin', SignIn.SignIn, "Sign in"),
-    ('/signout', SignOut.SignOut, "Sign out"),
-    ('/welcome', Welcome.Welcome, None),
+    ('/signup', Signup.SignUp),
+    ('/signin', SignIn.SignIn),
+    ('/signout', SignOut.SignOut),
+    ('/welcome', Welcome.Welcome),
 
-    ('/ascii_art', ASCIIArt.AsciiArt, "ASCII art"),
+    ('/ascii_art', ASCIIArt.AsciiArt),
 
-    ('/blog', Blog.BlogHomePage, "Blog home"),
-    ('/blog/([0-9]+)', Blog.BlogHandler, False),
-    ('/blog/newpost', Blog.NewPostHandler, False),
+    ('/blog', Blog.BlogHomePage),
+    ('/blog/([0-9]+)', Blog.BlogHandler),
+    ('/blog/newpost', Blog.NewPostHandler),
 
-    ('/moneyM1522/', Money.Home, None),
-    ('/moneyM1522/home', Money.Home, "Money M15.22"),
-    ('/moneyM1522/([0-9]+)', Money.Monthly, None),
+    ('/moneyM1522/home', Money.Home),
+    ('/moneyM1522/([0-9]+)', Money.Monthly),
+
+    ('/enigma', Enigma.EnigmaRequestHandler),
+
+    # ---- do not add path under this line --------
+    ('/(.*)', ErrorHandler.ErrorHandler, None)
 ]
 
 app = webapp2.WSGIApplication(Handler.handlers, debug=True)

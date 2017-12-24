@@ -13,6 +13,8 @@ BLOG_ADMIN_GROUP = [
 
 
 class BlogHomePage(Handler.Handler):
+    page_title = "Blog homepage"
+
     def get(self):
         blogs = db.GqlQuery("SELECT * FROM Blog ORDER BY created_time DESC limit 10")
         self.render("blog_home_page.html", blogs=blogs)
@@ -24,6 +26,8 @@ def log_in_as_admin(cookie):
 
 
 class NewPostHandler(Handler.Handler):
+    page_title = "New blog"
+
     def get(self):
         cookie = self.get_cookie_value('user')
 
@@ -71,7 +75,10 @@ class NewPostHandler(Handler.Handler):
 class BlogHandler(Handler.Handler):
     def get(self, blog_id):
         blog = Blog.get_by_id(int(blog_id))
-        self.render("blog.html", blog=blog)
+        if blog:
+            self.render("blog.html", blog=blog, __page_title__=blog.title)
+        else:
+            self.error(404)
 
 
 class Blog(db.Model):

@@ -9,6 +9,8 @@ def valid_login_cookie(cookie):
 
 
 class Welcome(Handler):
+    page_title = "Welcome"
+
     def get(self):
         login_cookie = self.request.cookies.get("user", None)
 

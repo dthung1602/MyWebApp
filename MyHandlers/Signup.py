@@ -15,6 +15,8 @@ EMAIL_RE = re.compile("^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$")
 
 
 class SignUp(Handler):
+    page_title = "Sign up"
+
     @staticmethod
     def valid_user(username):
         if not USER_RE.match(username):

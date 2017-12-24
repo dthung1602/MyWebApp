@@ -2,6 +2,8 @@ from Handler import Handler
 
 
 class Rot13(Handler):
+    page_title = "Rot 13"
+
     @staticmethod
     def rot13(text):
         a = ord('a')
