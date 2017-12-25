@@ -1,16 +1,22 @@
 {% extends "base.html" %}
 
 {% block body %}
-<h2>WELLCOME!</h2>
-<p4>Click one of these links:</p4>
+<div class="jumbotron" style="padding-top: 40px; padding-bottom: 20px">
+    <h1 style="padding-bottom:10px;padding-left:50px">WELCOME</h1>
+    <p style="text-align:right;padding-right:30px;font-size:100%;margin-bottom:0"><i>Last updated: 25/12/17</i></p>
+</div>
 
-<ul>
-{% for handler in handlers %}
-    <li>
-        <a href="{{__host__}}{{handler[0]}}">{{handler[1]}}</a>
-    </li>
-{% endfor %}
-</ul>
+<div class="container">
+    <h4>Click one of these links:</h4>
+
+    <ul>
+    {% for handler in handlers %}
+        <li style="padding-top: 5px">
+            <a href="{{handler[0]}}">{{handler[1]}}</a>
+        </li>
+    {% endfor %}
+    </ul>
+</div>
 
 {% endblock %}
 

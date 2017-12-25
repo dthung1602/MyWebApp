@@ -2,50 +2,64 @@
 
 {% block body %}
 
-<h1>Sign UP!</h1>
-<p>or <a href="{{__host__}}/signin">sign in</a></p>
-<form method="POST">
-    <table>
-        <tr>
-            <td>Username:</td>
-            <td><input name="username"
-                       value="{% if check[0] == 0 %}{{username}}{% endif %}">
-            </td>
+<div class="jumbotron">
+    <h1 style="padding-bottom:25px;padding-left:50px">SIGN UP</h1>
+</div>
+
+<div class="container">
+
+    <form method="POST" class="form-horizontal">
+        <br>
+        <div class="form-group">
+            <label class="control-label col-sm-2" for="username">Username</label>
+            <div class="col-sm-5">
+                <input class="form-control" id="username" name="username"
+                       value="{% if check[0] == 0 %}{{username}}{% endif %}" placeholder="somebody123">
+            </div>
             {% if check[0] == 1 %}
-            <td style="color:red"> Invalid username</td>
+            <span style="color:red"> Invalid username</span>
             {% elif check[0] == 2 %}
-            <td style="color:red"> Username has been taken</td>
+            <span style="color:red"> Username has been taken</span>
             {% endif %}
-        </tr>
-        <tr>
-            <td>Password:</td>
-            <td><input name="password" type="password"
-                       value="{% if check[1] == 0 and check[2] == 0 %}{{password}}{% endif %}">
-            </td>
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-sm-2" for="password">Password</label>
+            <div class="col-sm-5">
+                <input class="form-control" type="password" id="password" name="password"
+                       value="{% if check[1] == 0 and check[2] == 0 %}{{password}}{% endif %}" placeholder="******">
+            </div>
             {% if check[1] != 0 %}
-            <td style="color:red">Invalid password</td>
+            <span style="color:red">Invalid password</span>
             {% endif %}
-        </tr>
-        <tr>
-            <td>Verify password:</td>
-            <td><input name="verify" type="password"
-                       value="{% if check[1] == 0 and check[2] == 0 %}{{password}}{% endif %}">
-            </td>
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-sm-2" for="verify">Verify password</label>
+            <div class="col-sm-5">
+                <input class="form-control" type="password" id="verify" name="verify"
+                       value="{% if check[1] == 0 and check[2] == 0 %}{{password}}{% endif %}" placeholder="******">
+            </div>
             {% if check[2] != 0 %}
-            <td style="color:red">Does not match password</td>
+            <div style="color:red">Does not match password</div>
             {% endif %}
-        </tr>
-        <tr>
-            <td>Email (optional):</td>
-            <td><input name="email"
-                       value="{% if check[3] == 0 %}{{email}}{% endif %}">
-            </td>
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-sm-2" for="email">Email (optional)</label>
+            <div class="col-sm-5">
+                <input class="form-control" id="email" name="email" value="{% if check[3] == 0 %}{{email}}{% endif %}"
+                       placeholder="somebody123@example.com">
+            </div>
             {% if check[3] != 0 %}
-            <td style="color:red"> Invalid email</td>
+            <span style="color:red"> Invalid email</span>
             {% endif %}
-        </tr>
-    </table>
-    <input type="submit">
-</form>
+        </div>
+
+        <input type="submit" class="btn btn-success" value="Sign up" style="margin-left: 32%;margin-top: 25px; margin-bottom: 25px">
+    </form>
+
+    <h4 style="margin-left: 5%">Or you can sign in <a href="/signin">here</a></h4>
+</div>
 
 {% endblock %}

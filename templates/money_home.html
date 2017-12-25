@@ -22,7 +22,7 @@
     {% if months %}
     <div class="list-group">
         {% for m in months %}
-        <a class="list-group-item" href="{{__host__}}/moneyM1522/{{m.key().id()}}">
+        <a class="list-group-item" href="/moneyM1522/{{m.key().id()}}">
             {{m.to_string_short()}} ({{m.to_string_long()}})
             {% if m.time_end == None %}
             <span class="badge" style="background-color:green">current month</span>
