@@ -157,7 +157,7 @@ class Enigma:
         if not self.rs:
             self.pos = [None] + [self.wheel[i][0] for i in xrange(4)]
 
-        return new_text.strip()
+        return new_text
 
     def process_char(self, char):
         """encrypt/decrypt a single char"""
