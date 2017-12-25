@@ -90,10 +90,5 @@ class Blog(db.Model):
     def get_description(self):
         return " ".join(self.content.split()[:35]) + " ..."
 
-    def render_html(self, full=True):
-        t = Handler.jinja_env.get_template("single_blog.html")
-        blog_id = self.key().id()
-        return t.render(blog=self, blog_id=blog_id, full=full, __host__=Handler.__host__)
-
-    def render_content(self):
-        return self.content.replace("\n", "<br>")
+    def get_paragraphs(self):
+        return self.content.split("\n")

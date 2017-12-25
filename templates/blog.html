@@ -1,7 +1,41 @@
 {% extends "base.html" %}
 
 {% block body %}
-{{blog.render_html() | safe}}
-<br>
-<a href="/blog">Back to blog homepage</a>
-{% endblock %}
+
+<div class="jumbotron">
+    <h1 style="padding-bottom:25px;padding-left:50px">{{blog.title}}</h1>
+    <div style="padding-left:70px"><i>Created: {{blog.created_time.strftime('%d, %b %Y')}}</i></div>
+    <div style="padding-left:70px"><i>Last edited : {{blog.last_modified.strftime('%d, %b %Y')}}</i></div>
+</div>
+
+<div class="container" style="width: 50%; font-size: 130%; text-align: center; margin-top: 80px">
+    {% for para in blog.get_paragraphs() %}
+    <p style="text-align: justify; margin-top: 8px; margin-bottom: 40px">{{para}}</p>
+    {% endfor %}
+    <br><br>
+    <button class="btn btn-warning" onclick="window.location='/blog'">HOME</button>
+</div>
+
+<style>
+    p::first-letter {
+        color: #008ca5;
+        float: left;
+        font-size: 50px;
+        line-height: 60px;
+        padding-top: 4px;
+        padding-right: 5px;
+        padding-left: 3px;
+    }
+
+    p:first-child:first-letter {
+        color: #004699;
+        float: left;
+        font-size: 80px;
+        line-height: 60px;
+        padding-top: 4px;
+        padding-right: 5px;
+        padding-left: 3px;
+    }
+</style>
+
+{% endblock %}}

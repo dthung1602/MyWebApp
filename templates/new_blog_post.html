@@ -1,24 +1,44 @@
 {% extends "base.html" %} 
 
 {% block body %}
-    <h1>NEW BLOG POST</h1>
-    <hr><br>
-    <h4><a href="/blog">Click here to go to blog</a></h4>
-    
-    <form method="post">
-        <label>
-            <div>Title</div>
-            <input name="title" value="{{title}}">
-        </label>
 
-        <label>
-            <div>Content</div>
-            <textarea name="content" cols="100" rows="50">{{content}}</textarea>
-        </label>
+<div class="jumbotron">
+    <h1 style="padding-bottom:25px;padding-left:50px">NEW BLOG</h1>
+</div>
 
-        <div style="color:red">{{error}}</div>
-        <input type="submit">
+<div class="container" style="text-align: center">
+    <br>
+    <button class="btn btn-warning" onclick="window.location='/blog'">HOME</button>
+    <br><br>
+
+    <!------ Error ------->
+    {% if error %}
+    <br>
+    <div class="alert alert-danger" style="text-align: left; margin-left: 17%">
+        <img src="/static/image/error.png" height="55px">
+        <strong style="font-size:110%;margin-left: 20px">ERROR!</strong>
+        <span style="font-size:110%;margin-left: 30px">{{error}}</span>
+    </div>
+    <br>
+    {% endif %}
+
+    <form method="post" class="form-horizontal">
+        <div class="form-group">
+            <label class="control-label col-sm-2" for="title">Title</label>
+            <div class="col-sm-10">
+                <input class="form-control" id="title" name="title" value="{{title}}" placeholder="Blog title">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-sm-2" for="content">Content</label>
+            <div class="col-sm-10">
+                <textarea class="form-control" id="content" name="content" placeholder="Blog content" rows="25">{{content}}</textarea>
+            </div>
+        </div>
+
+        <input type="submit" class="btn btn-success" value="SUBMIT">
     </form>
+</div>
 
-<br><br><br> 
 {% endblock %}
