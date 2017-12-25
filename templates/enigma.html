@@ -109,13 +109,18 @@
             </div>
         </div>
 
-        <!---------------------------- reset -------------------------------->
-        <div style="text-align: center; margin-top: 50px; margin-bottom: 30px">
-            <label style="padding-right: 25px" title="After encryption/decryption">Nach dem Verschlüsseln/Entschlüsseln:</label>
-            <input type="radio" name="reset" value="true" {% if rs %} checked {% endif %}>
-            <span style="padding-left: 5px; padding-right: 25px" title="Reset">Zurücksetzen</span>
-            <input type="radio" name="reset" value="false" {% if not rs %} checked {% endif %}>
-            <span style="padding-left: 5px; padding-right: 25px" title="Keep">Fortsetzen</span>
+        <!---------------------------- option -------------------------------->
+        <div style="margin-top: 40px; margin-bottom: 40px; margin-left: 25%; text-align: left">
+            <!--<label style="padding-right: 25px" title="After encryption/decryption">Nach dem Verschlüsseln/Entschlüsseln:</label>-->
+            <!--<input type="radio" name="reset" value="true" {% if rs %} checked {% endif %}>-->
+            <!--<span style="padding-left: 5px; padding-right: 25px" title="Reset">Zurücksetzen</span>-->
+            <!--<input type="radio" name="reset" value="false" {% if not rs %} checked {% endif %}>-->
+            <!--<span style="padding-left: 5px; padding-right: 25px" title="Keep">Fortsetzen</span>-->
+            <input type="checkbox" name="reset" value="true" {% if rs %} checked {% endif %}>
+            <span title="Reset setting after encryption/decryption">Setzen die Einstellungen nach der Verschlüsselung / Entschlüsselung zurück</span>
+            <br><br>
+            <input type="checkbox" name="textformat" value="true" {% if tf %} checked {% endif %}>
+            <span title="Keep text format">Behalten das Textformat</span>
         </div>
 
         <input type="submit" value="EINREICHEN" class="btn btn-success" style="text-align:center;font-size:120%;width:200px" title="Submit">

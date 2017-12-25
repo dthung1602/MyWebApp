@@ -22,7 +22,7 @@ class EnigmaRequestHandler(Hl):
             super(EnigmaRequestHandler, self).render(*args,
                                                      w=[None, 'I', 'II', 'III', 'IV'],
                                                      p=[None, 'A', 'A', 'A', 'A'],
-                                                     rw='B', pb={}, rs=True, **kwargs)
+                                                     rw='B', pb={}, rs=True, tf=True, **kwargs)
 
     def get(self):
         self.render("enigma.html")
@@ -43,20 +43,20 @@ class EnigmaRequestHandler(Hl):
         pb = [self.request.get(c) for c in uppercase]
 
         rs = self.request.get("reset")
+        tf = self.request.get("textformat")
 
         # check if data is incomplete
-        attr_len = [len(pb), len(rw), len(w1), len(w2), len(w3), len(w4), len(p1), len(p2), len(p3), len(p4), len(rs)]
+        attr_len = [len(w1), len(w2), len(w3), len(w4), len(p1), len(p2), len(p3), len(p4), len(pb), len(rw)]
         if 0 in attr_len and sum(attr_len) > 0:
             self.render("enigma.html", error="Fehlende Einstellung!")
             return
 
         # process string and render html
         try:
-            enigma = Enigma(w1, w2, w3, w4, p1, p2, p3, p4, rw, pb, rs)
+            enigma = Enigma(w1, w2, w3, w4, p1, p2, p3, p4, rw, pb, rs, tf)
             text = enigma.process_string(self.request.get("text"))
-            print(enigma.pos_state)
             self.render("enigma.html", text=text,
-                        w=[None, w1, w2, w3, w4], p=enigma.pos_state, rw=rw, pb=enigma.pb, rs=enigma.rs)
+                        w=[None, w1, w2, w3, w4], p=enigma.pos, rw=rw, pb=enigma.pb, rs=rs, tf=tf)
         except (ValueError, KeyError, IndexError, TypeError):
             self.render("enigma.html", error="Ungültige Einstellung!")
         except:
@@ -97,13 +97,14 @@ reflector_wheels = {
 
 
 class Enigma:
-    def __init__(self, w1, w2, w3, w4, p1, p2, p3, p4, rw, pb, rs):
+    def __init__(self, w1, w2, w3, w4, p1, p2, p3, p4, rw, pb, rs, tf):
         """
             @:param w[i]: wheel settings, range: I, II, ... VIII
             @:param p[i]: first letter settings, range: ABC...Z
             @:param rw: reflect wheel, range BC
             @:param pb: plug board setting, range: permutation of ABC...Z
             @:param rs: whether to reset machine to init state
+            @:param tf: whether to keep text format
         """
 
         # wheels
@@ -119,30 +120,43 @@ class Enigma:
             raise ValueError
 
         # init letters
-        self.pos = [p1, p2, p3, p4]
+        self.pos = [None, p1, p2, p3, p4]
         for i in xrange(4):
-            p = self.wheel[i].index(self.pos[i])
+            p = self.wheel[i].index(self.pos[i + 1])
             self.wheel[i] = self.wheel[i][p:] + self.wheel[i][:p]
 
         # reflect wheel and plug board
         self.rw = reflector_wheels[rw]
         self.pb = self.create_plug_board(pb)
 
-        # reset
-        self.rs = (rs == "true")
-        print("Reset" if self.rs else "Keep")
-        if self.rs:
-            self.pos_state = [None, p1, p2, p3, p4]
+        # reset & text format
+        self.rs = rs
+        self.tf = tf
 
     def process_string(self, text):
         """encrypt/decrypt a string"""
         new_text = ""
-        for char in [c for c in text.upper() if c.isalpha()]:
-            new_text += self.process_char(char)
-            if len(new_text) % 5 == 4:
-                new_text += " "
+
+        if not self.tf:
+            # remove text format
+            for char in [c for c in text.upper() if c.isalpha()]:
+                new_text += self.process_char(char)
+                if len(new_text) % 5 == 4:
+                    new_text += " "
+        else:
+            # keep text format
+            for char in text:
+                if char.isalpha():
+                    capital = char.isupper()
+                    new_char = self.process_char(char.upper())
+                    new_text += new_char if capital else new_char.lower()
+                else:
+                    new_text += char
+
+        # keep wheel position
         if not self.rs:
-            self.pos_state = [None] + [self.wheel[i][0] for i in xrange(4)]
+            self.pos = [None] + [self.wheel[i][0] for i in xrange(4)]
+
         return new_text.strip()
 
     def process_char(self, char):
