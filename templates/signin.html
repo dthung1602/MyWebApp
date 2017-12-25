@@ -2,30 +2,49 @@
 
 {% block body %}
 
-<h1> Sign In! </h1>
+<div class="jumbotron">
+    <h1 style="padding-bottom:25px;padding-left:50px">SIGN IN</h1>
+</div>
 
-<h4 style="color:red">{{general_signin_errors}}</h4>
 
-<form method="post">
-    <table>
-        <tr>
-            <td>User name:</td>
-            <td><input name="username" value="{{username}}"></td>
-            <td style="color:red">{{username_error}}</td>
-        </tr>
-        <tr>
-            <td>Password:</td>
-            <td><input name="password" type="password"></td>
-            <td style="color:red">{{password_error}}</td>
-        </tr>
-    </table>
-    <input type="submit" value="Sign in">
-</form>
+<div class="container">
+    <!------ Error ------->
+    {% if general_signin_errors %}
+    <br><br>
+    <div class="alert alert-danger" style="width: 700px; text-align: left">
+        <img src="/static/image/error.png" height="55px">
+        <strong style="font-size:110%;margin-left: 20px">ERROR!</strong>
+        <span style="font-size:110%;margin-left: 30px">{{general_signin_errors}}</span>
+    </div>
+    {% endif %}
 
-{% if username_error %}
-<br>
-<p>Are you trying to <a href="/signup">sign up?</a></p>
-<br>
-{% endif %}
+    <!--------------form------------>
+    <form method="POST" class="form-horizontal">
+        <div class="form-group">
+            <label class="control-label col-sm-2" for="username">Username</label>
+            <div class="col-sm-5">
+                <input class="form-control" id="username" name="username"
+                       value="{{username}}" placeholder="somebody123">
+            </div>
+            <span style="color:red">{{username_error}}</span>
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-sm-2" for="password">Password</label>
+            <div class="col-sm-5">
+                <input class="form-control" id="password" name="password" type="password"
+                       value="{{password}}" placeholder="******">
+            </div>
+            <span style="color:red">{{password_error}}</span>
+        </div>
+
+        <input type="submit" class="btn btn-success" value="Sign in" style="margin-left: 32%;margin-top: 25px; margin-bottom: 25px">
+    </form>
+
+    {% if username_error %}
+    <h4 style="margin-left: 8%">Are you trying to <a href="/signin">sign up</a> ?</h4>
+    {% endif %}
+
+</div>
 
 {% endblock %}

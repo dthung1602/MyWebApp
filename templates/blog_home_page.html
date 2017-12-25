@@ -1,14 +1,19 @@
 {% extends "base.html" %} 
 
 {% block body %}
-<h1>WELCOME TO MY BLOG!!!</h1>
-<hr><br>
-<h4><a href="/blog/newpost">Click here to create new blog</a></h4>
+<div class="jumbotron">
+    <h1 style="padding-bottom:25px;padding-left:50px">WELCOME TO MY BLOG!!!</h1>
+</div>
 
-{% for blog in blogs %}
+<div class="container">
+    <button class="btn btn-info" onclick="window.location='/blog/newpost'">New Blog</button>
+    <br><br>
+
+    {% for blog in blogs %}
     {{blog.render_html(full=False) | safe}}
     <br><hr><br><br>
-{% endfor %}
+    {% endfor %}
 
-<br><br><br> 
+    <br><br><br>
+</div>
 {% endblock %}

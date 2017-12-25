@@ -9,7 +9,8 @@ class AsciiArt(Handler.Handler):
     page_title = "Ascii Art"
     
     def render_page(self, title="", art="", error=""):
-        arts = db.GqlQuery("SELECT * FROM Art ORDER BY time_created DESC")
+        arts = list(db.GqlQuery("SELECT * FROM Art ORDER BY time_created DESC"))
+        arts = arts if len(arts) > 0 else None
         self.render("ascii_art.html", title=title, art=art, error=error, arts=arts)
 
     def get(self):
