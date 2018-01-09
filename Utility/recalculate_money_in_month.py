@@ -16,21 +16,22 @@ def list_month():
 
 
 def print_month(month):
-    print month.to_string_short()
+    print "\n"
+    print "        " + month.to_string_short().upper()
     print month.to_string_long()
-    print "  ID = {}".format(month.key().id())
-    print "Spend = %d" % month.spend
+    print "ID      = {}".format(month.key().id())
+    print "Spend   = %d" % month.spend
     print "Average = %f" % month.average
-    print "\n\n"
+    print "\n"
 
 
 def print_usage(usage):
-    print("NAME: %s" % Buyer.get_by_id(usage.buyer_id).name)
+    print("NAME:     %s" % Buyer.get_by_id(usage.buyer_id).name)
     print("Last month left = %f" % usage.last_month_left)
     print("Next month left = %f" % usage.next_month_left)
-    print("Money spend = %d" % usage.money_spend)
-    print("Money to pay = %f" % usage.money_to_pay)
-    print("Round up = %d" % usage.roundup)
+    print("Money spend     = %d" % usage.money_spend)
+    print("Money to pay    = %f" % usage.money_to_pay)
+    print("Round up        = %d" % usage.roundup)
     print("-----------------------------")
 
 
@@ -56,7 +57,8 @@ def recalculate(month_id):
 
         # update money spend in month
         for usage in usages:
-            goods = list(db.GqlQuery("SELECT * FROM Good WHERE buyer = {}".format(usage.buyer_id)))
+            goods = db.GqlQuery("SELECT * FROM Good WHERE buyer = {} AND month_id = {}"
+                                .format(usage.buyer_id, usage.month_id))
             usage.money_spend = sum(good.price for good in goods)
             usage.put()
         sleep(1.5)
@@ -84,9 +86,8 @@ def recalculate(month_id):
         print_month(month)
         for usage in usages:
             print_usage(usage)
-        print("\nRecalculate done!")
+        print("\nRecalculate done!\n")
     except Exception:
         print("ERROR!")
         exc_type, exc_value, exc_traceback = sys.exc_info()
         traceback.print_exception(exc_type, exc_value, exc_traceback, file=sys.stdout)
-
