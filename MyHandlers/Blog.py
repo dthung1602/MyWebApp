@@ -60,7 +60,7 @@ class NewPostHandler(Handler.Handler):
                     blog.put()
 
                     time.sleep(1)
-                    self.redirect(Handler.__host__ + "/blog")
+                    self.redirect("/blog")
             else:
                 self.response.set_cookie("general_signin_errors", quote("You are not administrator!"))
                 self.response.set_cookie("redirect", "/blog/newpost")
