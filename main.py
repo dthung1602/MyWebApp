@@ -19,8 +19,8 @@ Handler.handlers = [
     ('/blog/([0-9]+)', Blog.BlogHandler),
     ('/blog/newpost', Blog.NewPostHandler),
 
-    ('/moneyM1522/home', Money.Home),
-    ('/moneyM1522/([0-9]+)', Money.Monthly),
+    ('/moneyM1522', Money.RedirectHandler),
+    ('/moneyM1522/(.*)', Money.RedirectHandler),
 
     ('/enigma', Enigma.EnigmaRequestHandler),
 

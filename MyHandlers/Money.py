@@ -1,13 +1,32 @@
+"""
+    This function has been moved to project MoneyCalculation
+    https://money-calculation-m1522.appspot.com/home
+"""
 import re
 from datetime import datetime
 from datetime import timedelta
+from google.appengine.ext import db
 from math import ceil
 from time import sleep
 
-from google.appengine.ext import db
-
 import Handler
 from Handler import Handler as Hl
+
+
+#############################################################
+#                    Redirect handler                       #
+#############################################################
+
+class RedirectHandler(Hl):
+    """Redirect all request to new project"""
+
+    page_title = "Money calculation"
+
+    def get(self, *args, **kwargs):
+        self.redirect("https://money-calculation-m1522.appspot.com/home")
+
+    def post(self, *args, **kwargs):
+        self.error(405)
 
 
 #############################################################
